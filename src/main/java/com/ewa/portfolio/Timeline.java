@@ -1,25 +1,29 @@
 package com.ewa.portfolio;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Table(name="notes")
-public class Note {
+@Table(name = "timelines")
+public class Timeline {
+
     @Id
     @GeneratedValue
     private Long id;
-    private String content;
+    @OneToMany //todo
+    @OrderColumn
+    private List<Note> noteList = new ArrayList<>();
     private String title;
 
-    public Note(String content, String title) {
-        this.content = content;
+
+    public Timeline(String title) {
         this.title = title;
     }
 
-    public Note() {
+    public Timeline() {
     }
 
     public Long getId() {
@@ -30,12 +34,12 @@ public class Note {
         this.id = id;
     }
 
-    public String getContent() {
-        return content;
+    public List<Note> getNoteList() {
+        return noteList;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setNoteList(List<Note> noteList) {
+        this.noteList = noteList;
     }
 
     public String getTitle() {
@@ -51,13 +55,13 @@ public class Note {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Note note = (Note) o;
+        Timeline timeline = (Timeline) o;
 
-        return id.equals(note.id);
+        return Objects.equals(id, timeline.id);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return id != null ? id.hashCode() : 0;
     }
 }

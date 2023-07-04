@@ -28,6 +28,7 @@ public class NoteController {
         return ResponseEntity.of(note);
     }
 
+    @Deprecated
     @PostMapping
     public ResponseEntity<NoteDTO> createNote(@RequestBody CreateNoteDto noteDTO) {
         NoteDTO createdNote = noteService.createNote(noteDTO);
