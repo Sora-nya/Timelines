@@ -1,5 +1,9 @@
-package com.ewa.portfolio;
+package com.ewa.portfolio.timelines.service;
 
+import com.ewa.portfolio.timelines.dto.CreateNoteDto;
+import com.ewa.portfolio.timelines.entity.Note;
+import com.ewa.portfolio.timelines.dto.NoteDto;
+import com.ewa.portfolio.timelines.repository.NoteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,12 +18,12 @@ public class NoteService {
         this.noteRepository = noteRepository;
     }
 
-    public Optional<NoteDTO> findNoteById(Long id) {
+    public Optional<NoteDto> findNoteById(Long id) {
         return noteRepository.findById(id)
                 .map(NoteService::createNoteDto);
     }
 
-    public List<NoteDTO> getAllNotes() {
+    public List<NoteDto> getAllNotes() {
         List<Note> notes =  noteRepository.findAll();
 
         return notes.stream()
@@ -27,12 +31,12 @@ public class NoteService {
                 .toList();
     }
 
-    public NoteDTO createNote(CreateNoteDto noteDTO) {
+    public NoteDto createNote(CreateNoteDto noteDTO) {
         Note note = noteRepository.save(new Note(noteDTO.content(), noteDTO.title()));
         return createNoteDto(note);
     }
 
-    public NoteDTO updateNote(Long id, NoteDTO noteDTO) {
+    public NoteDto updateNote(Long id, NoteDto noteDTO) {
         //sprawdzić czy istnieje takie ID i wtedy zrobić save
         Note note = noteRepository.findById(id).orElseThrow(); //throws NoSuchElementException
         note.setContent(noteDTO.content());
@@ -41,8 +45,8 @@ public class NoteService {
         return createNoteDto(updatedNote);
     }
 
-    public static NoteDTO createNoteDto(Note note) {
-        return new NoteDTO(note.getId(), note.getContent(), note.getTitle());
+    public static NoteDto createNoteDto(Note note) {
+        return new NoteDto(note.getId(), note.getContent(), note.getTitle());
     }
 
 

@@ -1,5 +1,8 @@
-package com.ewa.portfolio;
+package com.ewa.portfolio.rest;
 
+import com.ewa.portfolio.timelines.dto.CreateTimelineDto;
+import com.ewa.portfolio.timelines.dto.TimelineDto;
+import com.ewa.portfolio.timelines.service.TimelineService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,20 +21,20 @@ public class TimelineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TimelineDTO>> getAllTimelines() {
-        List<TimelineDTO> timelines = timelineService.getAllTimelines();
+    public ResponseEntity<List<TimelineDto>> getAllTimelines() {
+        List<TimelineDto> timelines = timelineService.getAllTimelines();
         return ResponseEntity.ok(timelines);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TimelineDTO> getAllTimelinesById(@PathVariable Long id) {
-        Optional<TimelineDTO> note = timelineService.findTimelineById(id);
+    public ResponseEntity<TimelineDto> getAllTimelinesById(@PathVariable Long id) {
+        Optional<TimelineDto> note = timelineService.findTimelineById(id);
         return ResponseEntity.of(note);
     }
 
     @PostMapping
-    public ResponseEntity<TimelineDTO> createTimeline(@RequestBody CreateTimelineDTO TimelineDTO) {
-        TimelineDTO timelineDTO = timelineService.createTimeline(TimelineDTO);
+    public ResponseEntity<TimelineDto> createTimeline(@RequestBody CreateTimelineDto TimelineDTO) {
+        TimelineDto timelineDTO = timelineService.createTimeline(TimelineDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(timelineDTO);
     }
 

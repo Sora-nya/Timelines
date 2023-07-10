@@ -1,4 +1,4 @@
-package com.ewa.portfolio;
+package com.ewa.portfolio.timelines.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

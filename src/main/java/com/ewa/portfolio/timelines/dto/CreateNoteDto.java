@@ -1,4 +1,4 @@
-package com.ewa.portfolio;
+package com.ewa.portfolio.timelines.dto;
 
 public record CreateNoteDto(String content, String title) {
 }
