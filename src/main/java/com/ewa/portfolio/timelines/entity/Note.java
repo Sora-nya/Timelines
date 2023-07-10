@@ -1,9 +1,6 @@
 package com.ewa.portfolio.timelines.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="notes")
@@ -13,6 +10,14 @@ public class Note {
     private Long id;
     private String content;
     private String title;
+    @ManyToOne
+    private Timeline timeline;
+
+    public Note(String content, String title, Timeline timeline) {
+        this.content = content;
+        this.title = title;
+        this.timeline = timeline;
+    }
 
     public Note(String content, String title) {
         this.content = content;

@@ -13,8 +13,7 @@ public class Timeline {
     @Id
     @GeneratedValue
     private Long id;
-    @OneToMany //todo
-    @OrderColumn
+    @OneToMany(mappedBy = "timeline") //todo
     private List<Note> noteList = new ArrayList<>();
     private String title;
 
