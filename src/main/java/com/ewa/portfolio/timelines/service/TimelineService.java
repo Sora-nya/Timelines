@@ -7,7 +7,9 @@ import com.ewa.portfolio.timelines.entity.Timeline;
 import com.ewa.portfolio.timelines.dto.TimelineDto;
 import com.ewa.portfolio.timelines.repository.NoteRepository;
 import com.ewa.portfolio.timelines.repository.TimelineRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +26,7 @@ public class TimelineService {
     }
 
     public List<TimelineDto> getAllTimelines() {
-        List<Timeline> timelines =  timelineRepository.findAll();
+        List<Timeline> timelines = timelineRepository.findAll();
 //        (timeline)->createTimelineDto(timeline) === TimelineService::createTimelineDto
         return timelines.stream()
                 .map(TimelineService::createTimelineDto).toList();
@@ -48,7 +50,8 @@ public class TimelineService {
     }
 
     public TimelineDto createNote(Long id, CreateNoteDto noteDto) {
-        Timeline timeline = timelineRepository.findById(id).orElseThrow();
+        Timeline timeline = timelineRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Timeline Not Found"));
         noteRepository.save(new Note(noteDto.content(), noteDto.title(), timeline));
         return createTimelineDto(timeline);
     }
