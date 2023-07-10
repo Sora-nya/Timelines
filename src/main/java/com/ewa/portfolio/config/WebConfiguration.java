@@ -1,4 +1,4 @@
-package com.ewa.portfolio;
+package com.ewa.portfolio.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
