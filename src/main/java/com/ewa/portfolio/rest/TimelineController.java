@@ -1,6 +1,8 @@
 package com.ewa.portfolio.rest;
 
+import com.ewa.portfolio.timelines.dto.CreateNoteDto;
 import com.ewa.portfolio.timelines.dto.CreateTimelineDto;
+import com.ewa.portfolio.timelines.dto.NoteDto;
 import com.ewa.portfolio.timelines.dto.TimelineDto;
 import com.ewa.portfolio.timelines.service.TimelineService;
 import org.springframework.http.HttpStatus;
@@ -39,5 +41,11 @@ public class TimelineController {
     }
 
     //todo @PostMapping("/{id}/notes")
+    @PostMapping("/{id}/notes")
+    public ResponseEntity<TimelineDto> createNote(@PathVariable Long id, @RequestBody CreateNoteDto noteDto) {
+        TimelineDto createdNote = timelineService.createNote(id, noteDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdNote);
+    }
+
 
 }

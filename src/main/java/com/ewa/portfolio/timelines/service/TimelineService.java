@@ -1,8 +1,11 @@
 package com.ewa.portfolio.timelines.service;
 
+import com.ewa.portfolio.timelines.dto.CreateNoteDto;
 import com.ewa.portfolio.timelines.dto.CreateTimelineDto;
+import com.ewa.portfolio.timelines.entity.Note;
 import com.ewa.portfolio.timelines.entity.Timeline;
 import com.ewa.portfolio.timelines.dto.TimelineDto;
+import com.ewa.portfolio.timelines.repository.NoteRepository;
 import com.ewa.portfolio.timelines.repository.TimelineRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +16,11 @@ import java.util.Optional;
 public class TimelineService {
 
     private final TimelineRepository timelineRepository;
+    private final NoteRepository noteRepository;
 
-    public TimelineService(TimelineRepository timelineRepository) {
+    public TimelineService(TimelineRepository timelineRepository, NoteRepository noteRepository) {
         this.timelineRepository = timelineRepository;
+        this.noteRepository = noteRepository;
     }
 
     public List<TimelineDto> getAllTimelines() {
@@ -40,5 +45,11 @@ public class TimelineService {
                 timeline.getNoteList().stream()
                         .map(NoteService::createNoteDto).toList(),
                 timeline.getTitle());
+    }
+
+    public TimelineDto createNote(Long id, CreateNoteDto noteDto) {
+        Timeline timeline = timelineRepository.findById(id).orElseThrow();
+        noteRepository.save(new Note(noteDto.content(), noteDto.title(), timeline));
+        return createTimelineDto(timeline);
     }
 }
