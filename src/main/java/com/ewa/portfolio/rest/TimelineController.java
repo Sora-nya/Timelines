@@ -47,5 +47,10 @@ public class TimelineController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdNote);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteNote(@PathVariable Long id) {
+        timelineService.deleteTimeline(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
 }

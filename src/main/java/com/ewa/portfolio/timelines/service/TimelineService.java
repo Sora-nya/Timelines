@@ -52,4 +52,8 @@ public class TimelineService {
         noteRepository.save(new Note(noteDto.content(), noteDto.title(), timeline));
         return createTimelineDto(timeline);
     }
+
+    public void deleteTimeline(Long id) {
+        timelineRepository.deleteById(id);
+    }
 }
