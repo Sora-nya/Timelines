@@ -4,6 +4,7 @@ import com.ewa.portfolio.timelines.dto.CreateNoteDto;
 import com.ewa.portfolio.timelines.dto.NoteDto;
 import com.ewa.portfolio.timelines.service.NoteService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,5 +43,11 @@ public class NoteController {
     public ResponseEntity<NoteDto> updateNote(@PathVariable Long id, @RequestBody NoteDto noteDTO) {
         NoteDto updatedNote = noteService.updateNote(id, noteDTO);
         return ResponseEntity.ok(updatedNote);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteNote(@PathVariable Long id) {
+        noteService.deleteNote(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

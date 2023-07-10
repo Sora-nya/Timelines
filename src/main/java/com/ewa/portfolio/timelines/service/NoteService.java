@@ -24,7 +24,7 @@ public class NoteService {
     }
 
     public List<NoteDto> getAllNotes() {
-        List<Note> notes =  noteRepository.findAll();
+        List<Note> notes = noteRepository.findAll();
 
         return notes.stream()
                 .map(NoteService::createNoteDto)
@@ -45,9 +45,11 @@ public class NoteService {
         return createNoteDto(updatedNote);
     }
 
+    public void deleteNote(Long id) {
+        noteRepository.deleteById(id);
+    }
+
     public static NoteDto createNoteDto(Note note) {
         return new NoteDto(note.getId(), note.getContent(), note.getTitle());
     }
-
-
 }
