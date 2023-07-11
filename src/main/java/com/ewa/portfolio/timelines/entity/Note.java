@@ -65,4 +65,8 @@ public class Note {
     public int hashCode() {
         return id.hashCode();
     }
+
+    public void setTimeline(Timeline timeline) {
+        this.timeline = timeline;
+    }
 }

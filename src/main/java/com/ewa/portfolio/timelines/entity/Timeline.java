@@ -63,4 +63,9 @@ public class Timeline {
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
+    public void add(Note newNote) {
+        noteList.add(newNote);
+        newNote.setTimeline(this);
+    }
 }

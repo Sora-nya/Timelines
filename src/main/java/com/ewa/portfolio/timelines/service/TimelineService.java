@@ -18,11 +18,9 @@ import java.util.Optional;
 public class TimelineService {
 
     private final TimelineRepository timelineRepository;
-    private final NoteRepository noteRepository;
 
-    public TimelineService(TimelineRepository timelineRepository, NoteRepository noteRepository) {
+    public TimelineService(TimelineRepository timelineRepository) {
         this.timelineRepository = timelineRepository;
-        this.noteRepository = noteRepository;
     }
 
     public List<TimelineDto> getAllTimelines() {
@@ -52,7 +50,10 @@ public class TimelineService {
     public TimelineDto createNote(Long id, CreateNoteDto noteDto) {
         Timeline timeline = timelineRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Timeline Not Found"));
-        noteRepository.save(new Note(noteDto.content(), noteDto.title(), timeline));
+        Note newNote = new Note(noteDto.content(), noteDto.title());
+        timeline.add(newNote);
+//        noteRepository.save(newNote);
+        timelineRepository.save(timeline); //update
         return createTimelineDto(timeline);
     }
 
