@@ -50,10 +50,9 @@ public class TimelineService {
     public TimelineDto createNote(Long id, CreateNoteDto noteDto) {
         Timeline timeline = timelineRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Timeline Not Found"));
-        Note newNote = new Note(noteDto.content(), noteDto.title());
+        Note newNote = new Note(noteDto.content(), noteDto.title(), timeline);
         timeline.add(newNote);
-//        noteRepository.save(newNote);
-        timelineRepository.save(timeline); //update
+        timelineRepository.save(timeline);
         return createTimelineDto(timeline);
     }
 

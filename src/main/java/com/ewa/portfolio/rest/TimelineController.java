@@ -40,11 +40,10 @@ public class TimelineController {
         return ResponseEntity.status(HttpStatus.CREATED).body(timelineDTO);
     }
 
-    //todo @PostMapping("/{id}/notes")
     @PostMapping("/{id}/notes")
     public ResponseEntity<TimelineDto> createNote(@PathVariable Long id, @RequestBody CreateNoteDto noteDto) {
-        TimelineDto createdNote = timelineService.createNote(id, noteDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdNote);
+        TimelineDto timelineDto = timelineService.createNote(id, noteDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(timelineDto);
     }
 
     @DeleteMapping("/{id}")

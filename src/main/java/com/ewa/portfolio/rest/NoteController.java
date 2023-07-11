@@ -32,13 +32,6 @@ public class NoteController {
         return ResponseEntity.of(note);
     }
 
-    @Deprecated
-    @PostMapping
-    public ResponseEntity<NoteDto> createNote(@RequestBody CreateNoteDto noteDTO) {
-        NoteDto createdNote = noteService.createNote(noteDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdNote);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<NoteDto> updateNote(@PathVariable Long id, @RequestBody NoteDto noteDTO) {
         NoteDto updatedNote = noteService.updateNote(id, noteDTO);

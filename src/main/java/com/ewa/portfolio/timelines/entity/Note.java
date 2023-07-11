@@ -19,11 +19,6 @@ public class Note {
         this.timeline = timeline;
     }
 
-    public Note(String content, String title) {
-        this.content = content;
-        this.title = title;
-    }
-
     public Note() {
     }
 

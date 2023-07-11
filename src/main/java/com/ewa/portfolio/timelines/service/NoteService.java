@@ -31,14 +31,8 @@ public class NoteService {
                 .toList();
     }
 
-    public NoteDto createNote(CreateNoteDto noteDTO) {
-        Note note = noteRepository.save(new Note(noteDTO.content(), noteDTO.title()));
-        return createNoteDto(note);
-    }
-
     public NoteDto updateNote(Long id, NoteDto noteDTO) {
-        //sprawdzić czy istnieje takie ID i wtedy zrobić save
-        Note note = noteRepository.findById(id).orElseThrow(); //throws NoSuchElementException
+        Note note = noteRepository.findById(id).orElseThrow();
         note.setContent(noteDTO.content());
         note.setTitle(noteDTO.title());
         Note updatedNote = noteRepository.save(note);

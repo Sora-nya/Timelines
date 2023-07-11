@@ -66,6 +66,5 @@ public class Timeline {
 
     public void add(Note newNote) {
         noteList.add(newNote);
-        newNote.setTimeline(this);
     }
 }
