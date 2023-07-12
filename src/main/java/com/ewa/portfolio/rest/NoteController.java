@@ -1,10 +1,8 @@
 package com.ewa.portfolio.rest;
 
-import com.ewa.portfolio.timelines.dto.CreateNoteDto;
 import com.ewa.portfolio.timelines.dto.NoteDto;
 import com.ewa.portfolio.timelines.service.NoteService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

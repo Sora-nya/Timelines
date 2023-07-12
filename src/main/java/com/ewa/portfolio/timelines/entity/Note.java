@@ -2,6 +2,8 @@ package com.ewa.portfolio.timelines.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name="notes")
 public class Note {
@@ -13,10 +15,13 @@ public class Note {
     @ManyToOne
     private Timeline timeline;
 
-    public Note(String content, String title, Timeline timeline) {
+    private BigDecimal position;
+
+    public Note(String content, String title, Timeline timeline, BigDecimal position) {
         this.content = content;
         this.title = title;
         this.timeline = timeline;
+        this.position = position;
     }
 
     public Note() {
@@ -46,6 +51,18 @@ public class Note {
         this.title = title;
     }
 
+    public void setTimeline(Timeline timeline) {
+        this.timeline = timeline;
+    }
+
+    public BigDecimal getPosition() {
+        return position;
+    }
+
+    public void setPosition(BigDecimal position) {
+        this.position = position;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,7 +78,4 @@ public class Note {
         return id.hashCode();
     }
 
-    public void setTimeline(Timeline timeline) {
-        this.timeline = timeline;
-    }
 }
