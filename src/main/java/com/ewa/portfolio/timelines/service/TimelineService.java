@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,8 +57,15 @@ public class TimelineService {
     public TimelineDto createNote(Long id, CreateNoteDto noteDto) {
         Timeline timeline = timelineRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Timeline Not Found"));
+        BigDecimal position = calculatePosition(noteDto, timeline);
+        Note newNote = new Note(noteDto.content(), noteDto.title(), timeline, position);
+        timeline.add(newNote);
+        timelineRepository.save(timeline);
+        return createTimelineDto(timeline);
+    }
+
+    private static BigDecimal calculatePosition(CreateNoteDto noteDto, Timeline timeline) {
         BigDecimal position = MIN_POSITION.add(MAX_POSITION).divide(new BigDecimal("2"));
-        // ogarnięcie jaki case - poczatek, koniec, pomiędzy
         if (noteDto.priorId() == null && noteDto.posteriorId() == null) {
             position = MIN_POSITION.add(MAX_POSITION).divide(new BigDecimal("2"));
         }
@@ -75,11 +80,7 @@ public class TimelineService {
             List<Note> notes = timeline.getNoteList().stream().filter(note -> note.getId().equals(noteDto.priorId()) || note.getId().equals(noteDto.posteriorId())).toList();
             position = notes.get(0).getPosition().add(notes.get(1).getPosition()).divide(new BigDecimal("2"));
         }
-        Note newNote = new Note(noteDto.content(), noteDto.title(), timeline, position);
-
-        timeline.add(newNote);
-        timelineRepository.save(timeline);
-        return createTimelineDto(timeline);
+        return position;
     }
 
     public void deleteTimeline(Long id) {
