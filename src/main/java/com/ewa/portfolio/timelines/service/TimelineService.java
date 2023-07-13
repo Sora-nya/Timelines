@@ -22,6 +22,8 @@ public class TimelineService {
 
     private static final BigDecimal MAX_POSITION = BigDecimal.valueOf(100.0);
     private static final BigDecimal MIN_POSITION = BigDecimal.valueOf(0.0);
+    private static final BigDecimal TWO = new BigDecimal("2");
+
 
     public TimelineService(TimelineRepository timelineRepository) {
         this.timelineRepository = timelineRepository;
@@ -65,20 +67,20 @@ public class TimelineService {
     }
 
     private static BigDecimal calculatePosition(CreateNoteDto noteDto, Timeline timeline) {
-        BigDecimal position = MIN_POSITION.add(MAX_POSITION).divide(new BigDecimal("2"));
+        BigDecimal position = MIN_POSITION.add(MAX_POSITION).divide(TWO);
         if (noteDto.priorId() == null && noteDto.posteriorId() == null) {
-            position = MIN_POSITION.add(MAX_POSITION).divide(new BigDecimal("2"));
+            position = MIN_POSITION.add(MAX_POSITION).divide(TWO);
         }
         if (noteDto.priorId() == null && noteDto.posteriorId() != null) {
-            position = MIN_POSITION.add(timeline.getNoteList().get(0).getPosition()).divide(new BigDecimal("2"));
+            position = MIN_POSITION.add(timeline.getNoteList().get(0).getPosition()).divide(TWO);
         }
         if (noteDto.priorId() != null && noteDto.posteriorId() == null) {
-            position = timeline.getNoteList().get(timeline.getNoteList().size() - 1).getPosition().add(MAX_POSITION).divide(new BigDecimal("2"));
+            position = timeline.getNoteList().get(timeline.getNoteList().size() - 1).getPosition().add(MAX_POSITION).divide(TWO);
         }
         if (noteDto.priorId() != null && noteDto.posteriorId() != null) {
             //todo sanitize inputs - sprawdzić czy są valid wartości idików posterior i prior
             List<Note> notes = timeline.getNoteList().stream().filter(note -> note.getId().equals(noteDto.priorId()) || note.getId().equals(noteDto.posteriorId())).toList();
-            position = notes.get(0).getPosition().add(notes.get(1).getPosition()).divide(new BigDecimal("2"));
+            position = notes.get(0).getPosition().add(notes.get(1).getPosition()).divide(TWO);
         }
         return position;
     }
