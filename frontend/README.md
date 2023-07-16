@@ -7,24 +7,23 @@ Story Planner is a powerful tool designed specifically for writers and storymake
 ### Key Features
 Create Timelines: Users can create multiple timelines to represent different storylines, plot threads, or character arcs. Each timeline provides a dedicated canvas for organizing and arranging notes.
 
-+ Add and Arrange Notes: Easily add notes to timelines, allowing users to capture important story elements, scenes, or ideas. Notes can be easily dragged and dropped to change their position in the story, facilitating intuitive rearrangement.
++ **Add and Arrange Notes**: Easily add notes to timelines, allowing users to capture important story elements, scenes, or ideas. Notes can be easily dragged and dropped to change their position in the story, facilitating intuitive rearrangement.
 
-+ Edit and Delete: Users have complete control over their timelines and notes. They can edit the content, titles, or descriptions of both timelines and individual notes. Furthermore, they can delete unwanted timelines or notes effortlessly.
++ **Edit and Delete**: Users have complete control over their timelines and notes. They can edit the content, titles, or descriptions of both timelines and individual notes. Furthermore, they can delete unwanted timelines or notes effortlessly.
 
-+ Multiple Timelines: Story Planner allows users to work on multiple storylines simultaneously. Writers and storymakers can switch between different timelines, ensuring efficient management of diverse narrative elements.
++ **Multiple Timelines**: Story Planner allows users to work on multiple storylines simultaneously. Writers and storymakers can switch between different timelines, ensuring efficient management of diverse narrative elements.
 
-+ Title and Description: Users can add titles to timelines and notes, providing a clear overview of each timeline's purpose or note's content. This feature allows for better organization and understanding of the story's structure.
++ **Title and Description**: Users can add titles to timelines and notes, providing a clear overview of each timeline's purpose or note's content. This feature allows for better organization and understanding of the story's structure.
 
 + Tags (Coming Soon): In a future update, Story Planner will introduce the ability to assign tags to timelines and notes, enabling users to categorize and filter their story elements based on themes, characters, or plot points.
 
 ### Benefits for Storymaking and Story Development
 
-+ Efficient Planning: Story Planner streamlines the story planning process, allowing writers and storymakers to conceptualize and structure their narratives more effectively. The visual representation of timelines and notes provides a comprehensive view of the story's progression.
++ **Efficient Plannin**g: Story Planner streamlines the story planning process, allowing writers and storymakers to conceptualize and structure their narratives more effectively. The visual representation of timelines and notes provides a comprehensive view of the story's progression.
 
-+ Visualization of Story Flow: By visualizing story elements on timelines, users gain a deeper understanding of the story's flow, pacing, and structure. This helps in identifying potential gaps, inconsistencies, or areas requiring further development.
++ **Visualization of Story Flow**: By visualizing story elements on timelines, users gain a deeper understanding of the story's flow, pacing, and structure. This helps in identifying potential gaps, inconsistencies, or areas requiring further development.
 
-+ Improved Organization: Story Planner enables users to organize story components in a systematic and intuitive manner. Users can easily arrange notes on timelines, ensuring coherent storytelling and facilitating a seamless writing process.
-
++ **Improved Organization**: Story Planner enables users to organize story components in a systematic and intuitive manner. Users can easily arrange notes on timelines, ensuring coherent storytelling and facilitating a seamless writing process.
 
 
 
@@ -35,7 +34,7 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.\
+Runs the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
+The page will reload if you make edits.
