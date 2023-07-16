@@ -27,31 +27,8 @@ const TimelineTitle = styled.h2`
   margin-right: 1rem;
 `;
 
-const stubTimelines: Timeline[] = [
-    {
-        id: 1,
-        notes: [],
-        title: 'stub'
-    },
-    {
-        id: 2,
-        notes: [],
-        title: 'aaaa'
-    },
-    {
-        id: 3,
-        notes: [],
-        title: 'aaaaaaaaaa'
-    },
-    {
-        id: 4,
-        notes: [],
-        title: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-    }
-]
-
 export const TimelineList = () => {
-    const [timeline, setTimeline] = useState<Timeline[]>(stubTimelines)
+    const [timeline, setTimeline] = useState<Timeline[]>()
 
 
     useEffect(() => {
@@ -67,8 +44,8 @@ export const TimelineList = () => {
         }
     };
     // todo: 
-    // ostylowanie listy + wydzielenie elementu listy do komponentu własnego - obiekt w liście
-    // fetchowanie z backendu rzeczywistych danych,
+    // ostylowanie listy + wydzielenie elementu listy do komponentu własnego - obiekt w liście +
+    // fetchowanie z backendu rzeczywistych danych, +
     // (czy nie daj się ustawić danych w h2 przy starcie aplikacji?) 
     // routing
     // widok pojedyńczego timelinu 
@@ -76,9 +53,9 @@ export const TimelineList = () => {
         <div>
             <h1>TimelineList</h1>
             <ListContainer>
-                {
-                    timeline.map(timeline => (
-                        <TimelineItem>
+                {//niech mi Jacek wwytłumaczy czemu ten pytajnik działa.
+                    timeline?.map(timeline => (
+                        <TimelineItem key={timeline.id}>
                             <TimelineTitle>{timeline.title}</TimelineTitle>
                         </TimelineItem>
                     ))
