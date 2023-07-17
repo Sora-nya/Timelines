@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Entity
@@ -67,5 +68,12 @@ public class Timeline {
 
     public void add(Note newNote) {
         noteList.add(newNote);
+    }
+
+    public Note findNoteById(Long noteId) {
+        return noteList.stream()
+                .filter(note -> note.getId().equals(noteId))
+                .findFirst()
+                .orElseThrow(()-> new NoSuchElementException("Note of id " + noteId + " not found"));
     }
 }

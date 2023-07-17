@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,30 +60,26 @@ public class TimelineService {
     public TimelineDto createNote(Long id, CreateNoteDto noteDto) {
         Timeline timeline = timelineRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Timeline Not Found"));
-        BigDecimal position = calculatePosition(noteDto, timeline);
+        //validate CreateNoteDto ids
+
+        BigDecimal position = calculatePosition(noteDto.priorId(), noteDto.posteriorId(), timeline);
         Note newNote = new Note(noteDto.content(), noteDto.title(), timeline, position);
         timeline.add(newNote);
         timelineRepository.save(timeline);
         return createTimelineDto(timeline);
     }
 
-    private static BigDecimal calculatePosition(CreateNoteDto noteDto, Timeline timeline) {
-        BigDecimal position = MIN_POSITION.add(MAX_POSITION).divide(TWO);
-        if (noteDto.priorId() == null && noteDto.posteriorId() == null) {
-            position = MIN_POSITION.add(MAX_POSITION).divide(TWO);
-        }
-        if (noteDto.priorId() == null && noteDto.posteriorId() != null) {
-            position = MIN_POSITION.add(timeline.getNoteList().get(0).getPosition()).divide(TWO);
-        }
-        if (noteDto.priorId() != null && noteDto.posteriorId() == null) {
-            position = timeline.getNoteList().get(timeline.getNoteList().size() - 1).getPosition().add(MAX_POSITION).divide(TWO);
-        }
-        if (noteDto.priorId() != null && noteDto.posteriorId() != null) {
-            //todo sanitize inputs - sprawdzić czy są valid wartości idików posterior i prior
-            List<Note> notes = timeline.getNoteList().stream().filter(note -> note.getId().equals(noteDto.priorId()) || note.getId().equals(noteDto.posteriorId())).toList();
-            position = notes.get(0).getPosition().add(notes.get(1).getPosition()).divide(TWO);
-        }
-        return position;
+    private BigDecimal calculatePosition(Long priorId, Long posteriorId, Timeline timeline) {
+        BigDecimal priorPosition = getNotePositionOr(priorId, timeline, MIN_POSITION);
+        BigDecimal posteriorPosition = getNotePositionOr(posteriorId, timeline, MAX_POSITION);
+        if (priorPosition.compareTo(posteriorPosition)>=0)
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Prior note should be before posterior");
+
+        return priorPosition.add(posteriorPosition).divide(TWO, RoundingMode.UNNECESSARY);
+    }
+
+    private BigDecimal getNotePositionOr(Long noteId, Timeline timeline, BigDecimal defaultPosition) {
+        return noteId == null ? defaultPosition : timeline.findNoteById(noteId).getPosition();
     }
 
     public void deleteTimeline(Long id) {

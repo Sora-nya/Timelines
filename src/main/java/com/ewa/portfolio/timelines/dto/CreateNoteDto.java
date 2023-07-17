@@ -1,4 +1,6 @@
 package com.ewa.portfolio.timelines.dto;
 
-public record CreateNoteDto(String content, String title, Long priorId, Long posteriorId) {
+import jakarta.annotation.Nullable;
+
+public record CreateNoteDto(String content, String title, @Nullable Long priorId, @Nullable Long posteriorId) {
 }
