@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Timeline } from '../../types/types'
 import styled from 'styled-components';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const ListContainer = styled.div`
-background-color: ${(p) => p.theme.colors['background']};
+background-color: ${p => p.theme.colors.background};
 padding: 1rem;
 display: flex;
 flex-direction: column;
@@ -14,22 +15,26 @@ const TimelineItem = styled.div`
 display: flex;
 align-items: center;
 padding: 0.5rem;
-background-color: ${(props) => props.theme.colors.accent};
+background-color: ${(p) => p.theme.colors.accent};
 border-radius: 5px;
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 margin: 0.5rem 0; 
 `;
 
 const TimelineTitle = styled.h2`
-  color: ${(p) => p.theme.colors['text']};
+  color: ${(p) => p.theme.colors.text};
   font-size: 1.2rem;
   font-weight: bold;
   margin-right: 1rem;
+  text-decoration: none;
+`;
+
+const TimelineLink = styled(Link)`
+  text-decoration: none; /* Remove the text decoration for the Link component */
 `;
 
 export const TimelineList = () => {
     const [timeline, setTimeline] = useState<Timeline[]>()
-
 
     useEffect(() => {
         fetchTimelines();
@@ -45,19 +50,18 @@ export const TimelineList = () => {
     };
     // todo: 
     // ostylowanie listy + wydzielenie elementu listy do komponentu własnego - obiekt w liście +
-    // fetchowanie z backendu rzeczywistych danych, +
-    // (czy nie daj się ustawić danych w h2 przy starcie aplikacji?) 
-    // routing
     // widok pojedyńczego timelinu 
     return (
         <div>
             <h1>TimelineList</h1>
             <ListContainer>
-                {//niech mi Jacek wwytłumaczy czemu ten pytajnik działa.
+                {
                     timeline?.map(timeline => (
-                        <TimelineItem key={timeline.id}>
-                            <TimelineTitle>{timeline.title}</TimelineTitle>
-                        </TimelineItem>
+                        <TimelineLink to={`/timeline/${timeline.id}/notes`}  key={timeline.id}>
+                            <TimelineItem>
+                                <TimelineTitle>{timeline.title}</TimelineTitle>
+                            </TimelineItem>
+                        </TimelineLink>
                     ))
                 }
             </ListContainer>
