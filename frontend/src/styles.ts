@@ -5,6 +5,7 @@ const theme: DefaultTheme = {
     primary: '#816e94',
     background: '#f6e4dc',
     accent: '#a0c1b9',
+    lighterAccent: '#bcd3ce',
     highlight: '#44001a',
     callToAction: '#9a031e',
     text: '#101312',

@@ -19,6 +19,11 @@ background-color: ${(p) => p.theme.colors.accent};
 border-radius: 5px;
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 margin: 0.5rem 0; 
+transition: background-color 0.3s;
+
+&:hover {
+    background-color: ${(p) => p.theme.colors.lighterAccent};
+  }
 `;
 
 const TimelineTitle = styled.h2`
