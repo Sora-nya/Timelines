@@ -8,10 +8,10 @@ import styled from 'styled-components';
 // wyciagnąć id timeline'a z path +
 // uzyć go jako param urla do zapytania do backendu +
 // zrobić faktyczne zapytanie i podłączyć do stanu aby rzeczywiste dane były fetchowane i pokazywane +
-// ostylowanie notów pod alternating
+// ostylowanie notów pod alternating +/-
 // formik
-// dodanie nowego note'a (też gdzie, trzy przypadki)`
-// przyciski add między elementami timeline'u i na początku i końcu
+// dodanie nowego note'a (też gdzie, trzy przypadki)`+/-
+// przyciski add między elementami timeline'u i na początku i końcu +/-
 // formularz (form) formiku) do stworzenia note'a || reuse from timeline.tsx
 // wyświetlanie formularze kiedy kliknie się add - przekazać formie w jakim miejscu add został kliknięty
 //podświetlenie buttona - stan kiedy przycis add jest kliknięty
@@ -61,16 +61,32 @@ const Content = styled.p`
   color: ${(props) => props.theme.colors.text};
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 1rem;
+`;
+
+const AddButton = styled.button`
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  border: none;
+  border-radius: 5px;
+  background-color: ${(props) => props.theme.colors.accent};
+  color: ${(props) => props.theme.colors.text};
+  cursor: pointer;
+`;
+
 export const NotesPage = () => {
   const { timelineId } = useParams();
-  const [notes, setNotes] = useState<Timeline>();
+  const [timeline, setTimelines] = useState<Timeline>();
   const [insertAt, setInsertAt] = useState<AddId>();
 
   useEffect(() => {
     const getNotes = () => {
       axios.get(`http://localhost:8080/api/timelines/${timelineId}`).then((response) => {
         console.log(response.data)
-        setNotes(response.data);
+        setTimelines(response.data);
       }, (reason) => { console.log(reason) })
         .catch(e => {
           console.log(e)
@@ -84,16 +100,43 @@ export const NotesPage = () => {
     <div>
       <h1>Notes Page</h1>
       <p>Timeline ID: {timelineId}</p>
-      <NotesContainer>
-        
-        {notes?.notes.map((note, index) => (
-          // ciężko tu będzie użyć .map -> potencjalnie zwykłe imperatywne for loop
-          <NoteItem key={note.id} isRight={index % 2 === 1}>
-            <Title>{note.title}</Title>
-            <Content>{note.content}</Content>
-          </NoteItem>
-        ))}
-      </NotesContainer>
+      {timeline && (
+        <NotesContainer>
+          <AddButton>
+            prior: {null}
+            posterior: {timeline.notes.length > 0 ? timeline.notes[0].id : null}
+          </AddButton>
+
+          {timeline.notes.map((note, index) => (
+            <>
+              {
+                index > 0 && (
+                  <AddButton>
+                    prior: {timeline.notes[index - 1].id}
+                    posterior: {timeline.notes[index].id}
+                  </AddButton>)
+
+              }
+              {/* // ciężko tu będzie użyć .map -> potencjalnie zwykłe imperatywne for loop */}
+              <NoteItem key={note.id} isRight={index % 2 === 1}>
+                <Title>{note.title}</Title>
+                <Content>{note.content}</Content>
+              </NoteItem>
+            </>
+          ))
+          
+          }
+          { timeline.notes.length>0 && (
+            <AddButton>
+                      prior: {timeline.notes[timeline.notes.length-1].id}
+                      posterior: {null}
+            </AddButton>)
+          }
+        </NotesContainer>
+      )
+
+      }
+
     </div>
   );
 };
@@ -102,4 +145,5 @@ interface AddId {
   priorId: number;
   posteriorId: number;
 }
+
 
