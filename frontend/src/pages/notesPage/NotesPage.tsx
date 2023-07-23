@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Note, Timeline } from '../../types/types';
 import axios from 'axios';
 import styled from 'styled-components';
@@ -16,6 +16,11 @@ import styled from 'styled-components';
 // wyświetlanie formularze kiedy kliknie się add - przekazać formie w jakim miejscu add został kliknięty
 //podświetlenie buttona - stan kiedy przycis add jest kliknięty
 
+const TimelineTitle = styled.h1`
+  color: ${props => props.theme.colors.chocolateCosmos};
+  font-size: 2rem;
+  font-weight: bold;
+`;
 
 const NotesContainer = styled.div`
 display: flex;
@@ -24,6 +29,7 @@ justify-content: flex-start;
 align-items: center;
 
 height: 100vh;
+
 `;
 
 interface NoteItemProps {
@@ -61,13 +67,29 @@ const Content = styled.p`
   color: ${(props) => props.theme.colors.text};
 `;
 
+const HeaderContainer = styled.div`
+  position: relative;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   margin: 1rem;
 `;
 
-const AddButton = styled.button`
+const BackToTimelinesButton = styled.button`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: ${(props) => props.theme.colors.accent};
+  color: ${(props) => props.theme.colors.text};
+  cursor: pointer;
+`;
+
+const AddNoteButton = styled.button`
   padding: 0.5rem 1rem;
   margin: 0 0.5rem;
   border: none;
@@ -79,58 +101,67 @@ const AddButton = styled.button`
 
 export const NotesPage = () => {
   const { timelineId } = useParams();
-  const [timeline, setTimelines] = useState<Timeline>();
-  const [insertAt, setInsertAt] = useState<AddId>();
+  const [timeline, setTimeline] = useState<Timeline>();
+  const navigate = useNavigate();
+
+  const fetchData = () => {
+    axios
+      .get(`http://localhost:8080/api/timelines/${timelineId}`)
+      .then((response) => {
+        setTimeline(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  };
 
   useEffect(() => {
-    const getNotes = () => {
-      axios.get(`http://localhost:8080/api/timelines/${timelineId}`).then((response) => {
-        console.log(response.data)
-        setTimelines(response.data);
-      }, (reason) => { console.log(reason) })
-        .catch(e => {
-          console.log(e)
-        })
-    };
-
-    getNotes();
+    fetchData();
   }, [timelineId]);
+
+  const handleGoBack = () => {
+    navigate('/');
+  };
+
+  const renderNotesWithButtons = (note: Note, index: number) => {
+    return (
+      <>
+        {index > 0 && (
+          <AddNoteButton>
+            prior: {timeline!.notes[index - 1].id}
+            posterior: {note.id}
+          </AddNoteButton>
+        )}
+        <NoteItem isRight={index % 2 === 1}>
+          <Title>{note.title}</Title>
+          <Content>{note.content}</Content>
+        </NoteItem>
+      </>
+    );
+  };
 
   return (
     <div>
-      <h1>Notes Page</h1>
-      <p>Timeline ID: {timelineId}</p>
+      <ButtonContainer>
+        <BackToTimelinesButton onClick={handleGoBack}>Go back to timelines!</BackToTimelinesButton>
+      </ButtonContainer>
+      <HeaderContainer>
+        <TimelineTitle>{timeline?.title}</TimelineTitle>
+      </HeaderContainer>
       {timeline && (
         <NotesContainer>
-          <AddButton>
+          <AddNoteButton>
             prior: {null}
             posterior: {timeline.notes.length > 0 ? timeline.notes[0].id : null}
-          </AddButton>
+          </AddNoteButton>
 
-          {timeline.notes.map((note, index) => (
-            <>
-              {
-                index > 0 && (
-                  <AddButton>
-                    prior: {timeline.notes[index - 1].id}
-                    posterior: {timeline.notes[index].id}
-                  </AddButton>)
-
-              }
-              {/* // ciężko tu będzie użyć .map -> potencjalnie zwykłe imperatywne for loop */}
-              <NoteItem key={note.id} isRight={index % 2 === 1}>
-                <Title>{note.title}</Title>
-                <Content>{note.content}</Content>
-              </NoteItem>
-            </>
-          ))
-          
-          }
-          { timeline.notes.length>0 && (
-            <AddButton>
-                      prior: {timeline.notes[timeline.notes.length-1].id}
-                      posterior: {null}
-            </AddButton>)
+          {timeline.notes.map((note, index) => renderNotesWithButtons(note, index))}
+ 
+          {timeline.notes.length > 0 && (
+            <AddNoteButton>
+              prior: {timeline.notes[timeline.notes.length - 1].id}
+              posterior: {null}
+            </AddNoteButton>)
           }
         </NotesContainer>
       )
