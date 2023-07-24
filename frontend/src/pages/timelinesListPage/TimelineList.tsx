@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Timeline } from '../../types/types'
 import styled from 'styled-components';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const ListContainer = styled.div`
 background-color: ${p => p.theme.colors.background};
@@ -34,12 +34,9 @@ const TimelineTitle = styled.h2`
   text-decoration: none;
 `;
 
-const TimelineLink = styled(Link)`
-  text-decoration: none; /* Remove the text decoration for the Link component */
-`;
-
 export const TimelineList = () => {
     const [timeline, setTimeline] = useState<Timeline[]>()
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchTimelines();
@@ -53,20 +50,19 @@ export const TimelineList = () => {
             console.error('Error fetching timelines:', error);
         }
     };
-    // todo: 
-    // ostylowanie listy + wydzielenie elementu listy do komponentu własnego - obiekt w liście +
-    // widok pojedyńczego timelinu 
+
+    const handleTimelineClick = (timelineId: number) => {
+        navigate(`/timeline/${timelineId}/notes`);
+      };
     return (
         <div>
             <h1>TimelineList</h1>
             <ListContainer>
                 {
                     timeline?.map(timeline => (
-                        <TimelineLink to={`/timeline/${timeline.id}/notes`}  key={timeline.id}>
-                            <TimelineItem>
+                            <TimelineItem key={timeline.id}  onClick={() => handleTimelineClick(timeline.id)}>
                                 <TimelineTitle>{timeline.title}</TimelineTitle>
                             </TimelineItem>
-                        </TimelineLink>
                     ))
                 }
             </ListContainer>

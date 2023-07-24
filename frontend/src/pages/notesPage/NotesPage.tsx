@@ -4,17 +4,13 @@ import { Note, Timeline } from '../../types/types';
 import axios from 'axios';
 import styled from 'styled-components';
 
-// zrobić widok, w którym wyświetlę stubowe dane +
-// wyciagnąć id timeline'a z path +
-// uzyć go jako param urla do zapytania do backendu +
-// zrobić faktyczne zapytanie i podłączyć do stanu aby rzeczywiste dane były fetchowane i pokazywane +
-// ostylowanie notów pod alternating +/-
 // formik
 // dodanie nowego note'a (też gdzie, trzy przypadki)`+/-
-// przyciski add między elementami timeline'u i na początku i końcu +/-
 // formularz (form) formiku) do stworzenia note'a || reuse from timeline.tsx
 // wyświetlanie formularze kiedy kliknie się add - przekazać formie w jakim miejscu add został kliknięty
-//podświetlenie buttona - stan kiedy przycis add jest kliknięty
+// zmienienie buttonów na Komponenty, które mają props typu AddId
+// po kliknięciu w button zapisanie w stanie NotesPage AddId tego buttona
+// podświetlenie buttona - stan kiedy przycis add jest kliknięty
 
 const TimelineTitle = styled.h1`
   color: ${props => props.theme.colors.chocolateCosmos};
@@ -96,7 +92,11 @@ const AddNoteButton = styled.button`
   border-radius: 5px;
   background-color: ${(props) => props.theme.colors.accent};
   color: ${(props) => props.theme.colors.text};
+  opacity: 0.3;
   cursor: pointer;
+  &:hover {
+    opacity: 0.81; 
+  }
 `;
 
 export const NotesPage = () => {
