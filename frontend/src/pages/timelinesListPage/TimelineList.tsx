@@ -54,6 +54,7 @@ export const TimelineList = () => {
     const handleTimelineClick = (timelineId: number) => {
         navigate(`/timeline/${timelineId}/notes`);
       };
+      
     return (
         <div>
             <h1>TimelineList</h1>
@@ -69,4 +70,3 @@ export const TimelineList = () => {
         </div>
     )
 }
-

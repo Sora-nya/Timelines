@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import { Note, Timeline } from '../../types/types';
+import { AddButtonId, Note, Timeline } from '../../types/types';
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -85,7 +85,7 @@ const BackToTimelinesButton = styled.button`
   cursor: pointer;
 `;
 
-const AddNoteButton = styled.button`
+const StyledAddNoteButton = styled.button`
   padding: 0.5rem 1rem;
   margin: 0 0.5rem;
   border: none;
@@ -97,11 +97,17 @@ const AddNoteButton = styled.button`
   &:hover {
     opacity: 0.81; 
   }
+  &:focus {
+    opacity: 1;
+    outline: none; /* Optional: Removes the default focus outline */
+  }
 `;
 
 export const NotesPage = () => {
   const { timelineId } = useParams();
   const [timeline, setTimeline] = useState<Timeline>();
+  // stan ostatniego kliknietego przycisku
+  const [selectedButton, setSelectedButton] = useState<AddButtonId>()
   const navigate = useNavigate();
 
   const fetchData = () => {
@@ -127,10 +133,13 @@ export const NotesPage = () => {
     return (
       <>
         {index > 0 && (
-          <AddNoteButton>
-            prior: {timeline!.notes[index - 1].id}
-            posterior: {note.id}
-          </AddNoteButton>
+          <AddNoteButton 
+          priorId={timeline!.notes[index - 1].id} 
+          posteriorId={note.id}
+          onClick={() => updateSelectedButton({
+            priorId: timeline!.notes[index - 1].id,
+            posteriorId: note.id
+          })}/>
         )}
         <NoteItem isRight={index % 2 === 1}>
           <Title>{note.title}</Title>
@@ -138,6 +147,13 @@ export const NotesPage = () => {
         </NoteItem>
       </>
     );
+  };
+
+  // TODO: ustaw selectedButton na addId
+  // to jako prop do AddNoteButton
+  const updateSelectedButton = (addId: AddButtonId): void => {
+    setSelectedButton(addId);
+    console.log("aaaaaaaa");
   };
 
   return (
@@ -150,31 +166,43 @@ export const NotesPage = () => {
       </HeaderContainer>
       {timeline && (
         <NotesContainer>
-          <AddNoteButton>
-            prior: {null}
-            posterior: {timeline.notes.length > 0 ? timeline.notes[0].id : null}
-          </AddNoteButton>
-
+          <AddNoteButton
+            priorId = {null}
+            posteriorId= {timeline.notes.length > 0 ? timeline.notes[0].id : null}
+            onClick ={() => updateSelectedButton({
+              priorId: null,
+              posteriorId: timeline.notes.length > 0 ? timeline.notes[0].id : null
+            })}/>
           {timeline.notes.map((note, index) => renderNotesWithButtons(note, index))}
- 
           {timeline.notes.length > 0 && (
-            <AddNoteButton>
-              prior: {timeline.notes[timeline.notes.length - 1].id}
-              posterior: {null}
-            </AddNoteButton>)
+            <AddNoteButton
+              priorId= {timeline.notes[timeline.notes.length - 1].id}
+              posteriorId= {null}
+              onClick={() => updateSelectedButton({
+                priorId: timeline.notes[timeline.notes.length - 1].id,
+                posteriorId: null
+              })}/>
+            )
           }
         </NotesContainer>
-      )
-
-      }
-
+      )}
     </div>
   );
 };
 
-interface AddId {
-  priorId: number;
-  posteriorId: number;
+interface AddIdButtonProps {
+  priorId: number|null;
+  posteriorId: number|null;
+  selected?: boolean;
+  // mettoda, która wykona sie przy klikniecu buttona -> powinna ustawć stan selectedButton na AddId tego aktualnego buttona
+  onClick: (addId: AddButtonId) => void;
 }
 
-
+const AddNoteButton: React.FC<AddIdButtonProps> = (data) => {
+  return (
+    <StyledAddNoteButton onClick={()=>data.onClick({priorId:data.priorId, posteriorId:data.posteriorId})}>
+      prior: {data.priorId}
+      posterior: {data.posteriorId}
+    </StyledAddNoteButton>
+  );
+};
