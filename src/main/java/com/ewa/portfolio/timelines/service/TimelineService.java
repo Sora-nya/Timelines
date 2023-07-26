@@ -2,9 +2,11 @@ package com.ewa.portfolio.timelines.service;
 
 import com.ewa.portfolio.timelines.dto.CreateNoteDto;
 import com.ewa.portfolio.timelines.dto.CreateTimelineDto;
+import com.ewa.portfolio.timelines.dto.ReorderNoteDto;
 import com.ewa.portfolio.timelines.dto.TimelineDto;
 import com.ewa.portfolio.timelines.entity.Note;
 import com.ewa.portfolio.timelines.entity.Timeline;
+import com.ewa.portfolio.timelines.repository.NoteRepository;
 import com.ewa.portfolio.timelines.repository.TimelineRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,13 +23,16 @@ public class TimelineService {
 
     private final TimelineRepository timelineRepository;
 
+    private final NoteRepository noteRepository;
+
     private static final BigDecimal MAX_POSITION = BigDecimal.valueOf(100.0);
     private static final BigDecimal MIN_POSITION = BigDecimal.valueOf(0.0);
     private static final BigDecimal TWO = new BigDecimal("2");
 
 
-    public TimelineService(TimelineRepository timelineRepository) {
+    public TimelineService(TimelineRepository timelineRepository, NoteRepository noteRepository) {
         this.timelineRepository = timelineRepository;
+        this.noteRepository = noteRepository;
     }
 
     @Transactional(readOnly = true)
@@ -58,8 +63,7 @@ public class TimelineService {
 
     @Transactional
     public TimelineDto createNote(Long id, CreateNoteDto noteDto) {
-        Timeline timeline = timelineRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Timeline Not Found"));
+        Timeline timeline = getTimelineThrowIsNotFound(id);
         //validate CreateNoteDto ids
 
         BigDecimal position = calculatePosition(noteDto.priorId(), noteDto.posteriorId(), timeline);
@@ -67,6 +71,14 @@ public class TimelineService {
         timeline.add(newNote);
         timelineRepository.save(timeline);
         return createTimelineDto(timeline);
+    }
+
+
+    // TODO w wolnym czasie -> przenieść to do TimelineRepository
+    //      default interface method
+    private Timeline getTimelineThrowIsNotFound(Long id) {
+        return timelineRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Timeline Not Found"));
     }
 
     private BigDecimal calculatePosition(Long priorId, Long posteriorId, Timeline timeline) {
@@ -84,5 +96,17 @@ public class TimelineService {
 
     public void deleteTimeline(Long id) {
         timelineRepository.deleteById(id);
+    }
+
+    //todo updateNote
+    public void updateNote() {
+    }
+
+    @Transactional
+    public void reorderNote(ReorderNoteDto reorderNoteDto, Long timelineId) {
+        Timeline timeline = getTimelineThrowIsNotFound(timelineId);
+        BigDecimal newPosition = calculatePosition(reorderNoteDto.priorId(), reorderNoteDto.posteriorId(), timeline);
+        Note note = noteRepository.findById(reorderNoteDto.id()).orElseThrow();
+        note.setPosition(newPosition);
     }
 }

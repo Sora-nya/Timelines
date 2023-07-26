@@ -1,9 +1,6 @@
 package com.ewa.portfolio.rest;
 
-import com.ewa.portfolio.timelines.dto.CreateNoteDto;
-import com.ewa.portfolio.timelines.dto.CreateTimelineDto;
-import com.ewa.portfolio.timelines.dto.NoteDto;
-import com.ewa.portfolio.timelines.dto.TimelineDto;
+import com.ewa.portfolio.timelines.dto.*;
 import com.ewa.portfolio.timelines.service.TimelineService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +26,7 @@ public class TimelineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TimelineDto> getAllTimelinesById(@PathVariable Long id) {
+    public ResponseEntity<TimelineDto> getTimelineById(@PathVariable Long id) {
         Optional<TimelineDto> note = timelineService.findTimelineById(id);
         return ResponseEntity.of(note);
     }
@@ -50,6 +47,25 @@ public class TimelineController {
     public ResponseEntity<?> deleteNote(@PathVariable Long id) {
         timelineService.deleteTimeline(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    //todo updateNote
+    @PutMapping("/{timelineId}/notes/{noteId}")
+    public ResponseEntity<NoteDto> updateNote(@PathVariable Long timelineId, @PathVariable Long noteId) {
+        timelineService.updateNote();
+
+        //todo change na wartość NoteDto
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{timelineId}/notes/{noteId}/reorder")
+    public ResponseEntity<NoteDto> reorderNote(@PathVariable Long timelineId,
+                                               @PathVariable Long noteId,
+                                               @RequestBody ReorderNoteDto reorderNoteDto) {
+
+        timelineService.reorderNote(reorderNoteDto, timelineId);
+        //todo change na wartość NoteDto
+        return ResponseEntity.noContent().build();
     }
 
 }
