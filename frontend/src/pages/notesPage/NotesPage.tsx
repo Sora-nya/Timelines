@@ -8,8 +8,6 @@ import styled from 'styled-components';
 // dodanie nowego note'a (też gdzie, trzy przypadki)`+/-
 // formularz (form) formiku) do stworzenia note'a || reuse from timeline.tsx
 // wyświetlanie formularze kiedy kliknie się add - przekazać formie w jakim miejscu add został kliknięty
-// zmienienie buttonów na Komponenty, które mają props typu AddId
-// po kliknięciu w button zapisanie w stanie NotesPage AddId tego buttona
 // podświetlenie buttona - stan kiedy przycis add jest kliknięty
 
 const TimelineTitle = styled.h1`
@@ -85,28 +83,27 @@ const BackToTimelinesButton = styled.button`
   cursor: pointer;
 `;
 
-const StyledAddNoteButton = styled.button`
+interface ButtonIdProps {
+  isSelected?: boolean;
+}
+
+const StyledAddNoteButton = styled.button<ButtonIdProps>`
   padding: 0.5rem 1rem;
   margin: 0 0.5rem;
   border: none;
   border-radius: 5px;
   background-color: ${(props) => props.theme.colors.accent};
   color: ${(props) => props.theme.colors.text};
-  opacity: 0.3;
+  opacity: ${(props) => (props.isSelected ? '1' : '0.2')};
   cursor: pointer;
   &:hover {
     opacity: 0.81; 
-  }
-  &:focus {
-    opacity: 1;
-    outline: none; /* Optional: Removes the default focus outline */
   }
 `;
 
 export const NotesPage = () => {
   const { timelineId } = useParams();
   const [timeline, setTimeline] = useState<Timeline>();
-  // stan ostatniego kliknietego przycisku
   const [selectedButton, setSelectedButton] = useState<AddButtonId>()
   const navigate = useNavigate();
 
@@ -129,17 +126,23 @@ export const NotesPage = () => {
     navigate('/');
   };
 
+  const updateSelectedButton = (addId: AddButtonId): void => {
+    setSelectedButton(addId);
+  };
+
   const renderNotesWithButtons = (note: Note, index: number) => {
     return (
       <>
         {index > 0 && (
-          <AddNoteButton 
-          priorId={timeline!.notes[index - 1].id} 
-          posteriorId={note.id}
-          onClick={() => updateSelectedButton({
-            priorId: timeline!.notes[index - 1].id,
-            posteriorId: note.id
-          })}/>
+        
+          // can calculate priorId i posteriodId tutaj
+          <AddNoteButton
+            priorId={timeline!.notes[index - 1].id}
+            posteriorId={note.id}
+            onClick={updateSelectedButton}
+            // can make it into a function
+            selected={selectedButton?.priorId === timeline!.notes[index - 1].id && selectedButton?.posteriorId === note.id} 
+            />
         )}
         <NoteItem isRight={index % 2 === 1}>
           <Title>{note.title}</Title>
@@ -147,13 +150,6 @@ export const NotesPage = () => {
         </NoteItem>
       </>
     );
-  };
-
-  // TODO: ustaw selectedButton na addId
-  // to jako prop do AddNoteButton
-  const updateSelectedButton = (addId: AddButtonId): void => {
-    setSelectedButton(addId);
-    console.log("aaaaaaaa");
   };
 
   return (
@@ -167,22 +163,20 @@ export const NotesPage = () => {
       {timeline && (
         <NotesContainer>
           <AddNoteButton
-            priorId = {null}
-            posteriorId= {timeline.notes.length > 0 ? timeline.notes[0].id : null}
-            onClick ={() => updateSelectedButton({
-              priorId: null,
-              posteriorId: timeline.notes.length > 0 ? timeline.notes[0].id : null
-            })}/>
+            priorId={null}
+            posteriorId={timeline.notes.length > 0 ? timeline.notes[0].id : null}
+            onClick={updateSelectedButton}
+            selected={selectedButton?.priorId === null && selectedButton?.posteriorId === (timeline.notes.length > 0 ? timeline.notes[0].id : null)} 
+            />
           {timeline.notes.map((note, index) => renderNotesWithButtons(note, index))}
           {timeline.notes.length > 0 && (
             <AddNoteButton
-              priorId= {timeline.notes[timeline.notes.length - 1].id}
-              posteriorId= {null}
-              onClick={() => updateSelectedButton({
-                priorId: timeline.notes[timeline.notes.length - 1].id,
-                posteriorId: null
-              })}/>
-            )
+              priorId={timeline.notes[timeline.notes.length - 1].id}
+              posteriorId={null}
+              onClick={updateSelectedButton} 
+              selected={selectedButton?.priorId === timeline.notes[timeline.notes.length - 1].id && selectedButton?.posteriorId === null}
+              />
+          )
           }
         </NotesContainer>
       )}
@@ -191,18 +185,22 @@ export const NotesPage = () => {
 };
 
 interface AddIdButtonProps {
-  priorId: number|null;
-  posteriorId: number|null;
+  priorId: number | null;
+  posteriorId: number | null;
   selected?: boolean;
-  // mettoda, która wykona sie przy klikniecu buttona -> powinna ustawć stan selectedButton na AddId tego aktualnego buttona
   onClick: (addId: AddButtonId) => void;
 }
 
 const AddNoteButton: React.FC<AddIdButtonProps> = (data) => {
+  const {onClick,selected,posteriorId,priorId} = data;
   return (
-    <StyledAddNoteButton onClick={()=>data.onClick({priorId:data.priorId, posteriorId:data.posteriorId})}>
-      prior: {data.priorId}
-      posterior: {data.posteriorId}
+    <StyledAddNoteButton isSelected={selected} onClick={() =>
+      onClick({ priorId: priorId, posteriorId: posteriorId })
+    }>
+      {selected && <span>SELECTED</span>} 
+      prior: {priorId} 
+      posterior: {posteriorId}
     </StyledAddNoteButton>
   );
 };
+
