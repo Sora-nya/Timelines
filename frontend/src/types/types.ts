@@ -9,9 +9,4 @@ export interface Timeline{
     notes: Note[],
     title: string
 }
-
-export interface AddButtonId{
-    priorId: number|null;
-    posteriorId: number|null;
-  }
   

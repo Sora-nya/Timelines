@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import { AddButtonId, Note, Timeline } from '../../types/types';
+import { Note, Timeline } from '../../types/types';
 import axios from 'axios';
 import styled from 'styled-components';
+import { CreateNote } from './CreateNoteForm';
+import { AddButtonId } from './types';
 
-// formik
-// dodanie nowego note'a (też gdzie, trzy przypadki)`+/-
-// formularz (form) formiku) do stworzenia note'a || reuse from timeline.tsx
-// wyświetlanie formularze kiedy kliknie się add - przekazać formie w jakim miejscu add został kliknięty
-// podświetlenie buttona - stan kiedy przycis add jest kliknięty
+//todo formik
+//todo formularz (form) formiku) do stworzenia note'a
+//todo Wykminić, jak zrobić reorderowanie notatek na frontendzie - koncepcyjnie, jak to by miało wyglądać. Zrabialność tego ogarniemy później.
+//todo edycja note'ów
+//todo usuwanie note'ów
 
 const TimelineTitle = styled.h1`
-  color: ${props => props.theme.colors.chocolateCosmos};
+  color: ${props => props.theme.colors.highlight};
   font-size: 2rem;
   font-weight: bold;
+  padding: 1rem;
 `;
 
 const NotesContainer = styled.div`
@@ -23,7 +26,6 @@ justify-content: flex-start;
 align-items: center;
 
 height: 100vh;
-
 `;
 
 interface NoteItemProps {
@@ -131,18 +133,20 @@ export const NotesPage = () => {
   };
 
   const renderNotesWithButtons = (note: Note, index: number) => {
+    const priorId = index > 0 ? timeline!.notes[index - 1].id : null;
+    const isSelected = (): boolean => {
+      return selectedButton?.priorId === priorId && selectedButton?.posteriorId === posteriorId;
+    };
+    const posteriorId = note.id;
     return (
       <>
         {index > 0 && (
-        
-          // can calculate priorId i posteriodId tutaj
           <AddNoteButton
-            priorId={timeline!.notes[index - 1].id}
-            posteriorId={note.id}
+            priorId={priorId}
+            posteriorId={posteriorId}
             onClick={updateSelectedButton}
-            // can make it into a function
-            selected={selectedButton?.priorId === timeline!.notes[index - 1].id && selectedButton?.posteriorId === note.id} 
-            />
+            selected={isSelected()}
+          />
         )}
         <NoteItem isRight={index % 2 === 1}>
           <Title>{note.title}</Title>
@@ -160,22 +164,31 @@ export const NotesPage = () => {
       <HeaderContainer>
         <TimelineTitle>{timeline?.title}</TimelineTitle>
       </HeaderContainer>
+      {selectedButton !== undefined && timelineId !== undefined && (
+        <CreateNote
+          getNotes={fetchData}
+          positionId={selectedButton}
+          id={timelineId}
+          onClose={() => setSelectedButton(undefined)}
+        ></CreateNote>
+      )
+      }
       {timeline && (
         <NotesContainer>
           <AddNoteButton
             priorId={null}
             posteriorId={timeline.notes.length > 0 ? timeline.notes[0].id : null}
             onClick={updateSelectedButton}
-            selected={selectedButton?.priorId === null && selectedButton?.posteriorId === (timeline.notes.length > 0 ? timeline.notes[0].id : null)} 
-            />
+            selected={selectedButton?.priorId === null && selectedButton?.posteriorId === (timeline.notes.length > 0 ? timeline.notes[0].id : null)}
+          />
           {timeline.notes.map((note, index) => renderNotesWithButtons(note, index))}
           {timeline.notes.length > 0 && (
             <AddNoteButton
               priorId={timeline.notes[timeline.notes.length - 1].id}
               posteriorId={null}
-              onClick={updateSelectedButton} 
+              onClick={updateSelectedButton}
               selected={selectedButton?.priorId === timeline.notes[timeline.notes.length - 1].id && selectedButton?.posteriorId === null}
-              />
+            />
           )
           }
         </NotesContainer>
@@ -192,15 +205,14 @@ interface AddIdButtonProps {
 }
 
 const AddNoteButton: React.FC<AddIdButtonProps> = (data) => {
-  const {onClick,selected,posteriorId,priorId} = data;
+  const { onClick, selected, posteriorId, priorId } = data;
   return (
     <StyledAddNoteButton isSelected={selected} onClick={() =>
       onClick({ priorId: priorId, posteriorId: posteriorId })
     }>
-      {selected && <span>SELECTED</span>} 
-      prior: {priorId} 
+      {selected && <span>SELECTED</span>}
+      prior: {priorId}
       posterior: {posteriorId}
     </StyledAddNoteButton>
   );
 };
-
