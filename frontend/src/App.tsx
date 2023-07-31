@@ -1,12 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { Timeline } from './Timeline';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
+import theme from './styles/styles';
+import { TimelineList } from './pages/timelinesListPage/TimelineList';
+import { NotesPage } from './pages/notesPage/NotesPage';
+import GlobalStyle from './styles/GlobalStyle';
+
 
 function App() {
   return (
-    // equivalent to <Timeline></Timeline>
-    <Timeline/>
+    <ThemeProvider theme={theme}>
+     <GlobalStyle />
+      <Router>
+        <Routes>
+          <Route path="/" element={<TimelineList />} />
+          <Route path="/timeline/:timelineId/notes" element={<NotesPage />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 

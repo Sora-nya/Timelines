@@ -1,11 +1,6 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-
-interface Note{
-    id:number,
-    content:string,
-    title:string
-}
+import { Note } from "./types/types";
 
 export const Timeline: React.FC = () => {
     const [notes, setNotes] = useState<Note[]>();
