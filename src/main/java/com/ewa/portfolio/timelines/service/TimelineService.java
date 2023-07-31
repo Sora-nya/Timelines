@@ -1,9 +1,6 @@
 package com.ewa.portfolio.timelines.service;
 
-import com.ewa.portfolio.timelines.dto.CreateNoteDto;
-import com.ewa.portfolio.timelines.dto.CreateTimelineDto;
-import com.ewa.portfolio.timelines.dto.ReorderNoteDto;
-import com.ewa.portfolio.timelines.dto.TimelineDto;
+import com.ewa.portfolio.timelines.dto.*;
 import com.ewa.portfolio.timelines.entity.Note;
 import com.ewa.portfolio.timelines.entity.Timeline;
 import com.ewa.portfolio.timelines.repository.NoteRepository;
@@ -98,8 +95,14 @@ public class TimelineService {
         timelineRepository.deleteById(id);
     }
 
-    //todo updateNote
-    public void updateNote() {
+    @Transactional
+    public void updateNote(UpdateNoteDto updateNoteDto, long timelineId) {
+        Note note = noteRepository.findById(updateNoteDto.id()).orElseThrow();
+        note.setTitle(updateNoteDto.title());
+        note.setContent(updateNoteDto.content());
+        // bez @Transactional - trzeba zapisać, bo zmienna note nie ma aktywnej sesji
+        // z @transactional - zmienna note ma aktywną sesje i wszystkie zmiany do niej spropagują się do bazy
+        // noteRepository.save(note);
     }
 
     @Transactional
