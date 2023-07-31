@@ -1,8 +1,6 @@
 package com.ewa.portfolio.timelines.service;
 
-import com.ewa.portfolio.timelines.dto.CreateNoteDto;
-import com.ewa.portfolio.timelines.dto.CreateTimelineDto;
-import com.ewa.portfolio.timelines.dto.TimelineDto;
+import com.ewa.portfolio.timelines.dto.*;
 import com.ewa.portfolio.timelines.repository.NoteRepository;
 import com.ewa.portfolio.timelines.repository.TimelineRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -67,6 +65,7 @@ class TimelineServiceTest {
         });
     }
 
+
     @Test
     void can_insert_after_last() {
         // given
@@ -84,6 +83,49 @@ class TimelineServiceTest {
             );
             assertThat(noteList.get(1)).satisfies(note ->
                     assertThat(note.title()).isEqualTo("bbb")
+            );
+        });
+    }
+
+    @Test
+    void can_reorder_notes() {
+        // given
+        TimelineDto timelineDto = timelineService.createTimeline(new CreateTimelineDto("First"));
+        timelineDto = timelineService.createNote(timelineDto.id(), new CreateNoteDto("a", "2", null, null));
+        // todo: uprościć hack z updatedTimelineDto.notes().get(0).id() - private utility method? np. getFirstNoteId(TimelineDto dto)
+        timelineDto = timelineService.createNote(timelineDto.id(), new CreateNoteDto("b", "1", timelineDto.notes().get(0).id(), null));
+
+        // when
+        timelineService.reorderNote(new ReorderNoteDto(timelineDto.notes().get(1).id(),null, timelineDto.notes().get(0).id()), timelineDto.id());
+
+        //then
+        var timelines = timelineService.findTimelineById(timelineDto.id());
+        assertThat(timelines.get().notes()).satisfies(noteList -> {
+            assertThat(noteList.get(0)).satisfies(note ->
+                    assertThat(note.title()).isEqualTo("1")
+            );
+            assertThat(noteList.get(1)).satisfies(note ->
+                    assertThat(note.title()).isEqualTo("2")
+            );
+        });
+    }
+
+    @Test
+    void can_update_notes() {
+        // given
+        TimelineDto timelineDto = timelineService.createTimeline(new CreateTimelineDto("First"));
+        timelineDto = timelineService.createNote(timelineDto.id(), new CreateNoteDto("a", "2", null, null));
+
+        // when
+        timelineService.updateNote(new UpdateNoteDto(timelineDto.notes().get(0).id(), "new content", "new title"), timelineDto.id());
+
+        //then
+        var timelines = timelineService.findTimelineById(timelineDto.id());
+        assertThat(timelines.get().notes()).satisfies(noteList -> {
+            assertThat(noteList.get(0)).satisfies(note ->{
+                        assertThat(note.title()).isEqualTo("new title");
+                        assertThat(note.content()).isEqualTo("new content");
+                    }
             );
         });
     }

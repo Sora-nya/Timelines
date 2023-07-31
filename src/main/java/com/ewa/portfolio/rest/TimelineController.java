@@ -51,8 +51,11 @@ public class TimelineController {
 
     //todo updateNote
     @PutMapping("/{timelineId}/notes/{noteId}")
-    public ResponseEntity<NoteDto> updateNote(@PathVariable Long timelineId, @PathVariable Long noteId) {
-        timelineService.updateNote();
+    public ResponseEntity<NoteDto> updateNote(@PathVariable Long timelineId,
+                                              @PathVariable Long noteId,
+                                              @RequestBody UpdateNoteDto updateNoteDto) {
+        //todo walidacja noteId === updateNoteDto.id
+        timelineService.updateNote(updateNoteDto, timelineId);
 
         //todo change na wartość NoteDto
         return ResponseEntity.noContent().build();
