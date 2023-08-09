@@ -28,9 +28,9 @@ Create Timelines: Users can create multiple timelines to represent different sto
 
 
 ## Installation and Setup
-To run STimelines Planner, make sure you have Node.js and Java installed on your system. Once installed, you can start the frontend and backend servers to access the application in your browser.
+To run Timelines Planner, make sure you have Node.js and Java installed on your system. Once installed, you can start the frontend and backend servers to access the application in your browser.
 
-In the project directory, you can run:
+In the project directory frontend, you can run:
 
 ### `npm start`
 
