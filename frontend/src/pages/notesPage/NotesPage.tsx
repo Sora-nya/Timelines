@@ -6,8 +6,6 @@ import styled from 'styled-components';
 import { CreateNote } from './CreateNoteForm';
 import { AddButtonId } from './types';
 
-//todo formik
-//todo formularz (form) formiku) do stworzenia note'a
 //todo Wykminić, jak zrobić reorderowanie notatek na frontendzie - koncepcyjnie, jak to by miało wyglądać. Zrabialność tego ogarniemy później.
 //todo edycja note'ów
 //todo usuwanie note'ów
@@ -210,9 +208,7 @@ const AddNoteButton: React.FC<AddIdButtonProps> = (data) => {
     <StyledAddNoteButton isSelected={selected} onClick={() =>
       onClick({ priorId: priorId, posteriorId: posteriorId })
     }>
-      {selected && <span>SELECTED</span>}
-      prior: {priorId}
-      posterior: {posteriorId}
+      Add note!
     </StyledAddNoteButton>
   );
 };
