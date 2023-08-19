@@ -1,8 +1,7 @@
 package com.ewa.portfolio.timelines.service;
 
-import com.ewa.portfolio.timelines.dto.CreateNoteDto;
-import com.ewa.portfolio.timelines.entity.Note;
 import com.ewa.portfolio.timelines.dto.NoteDto;
+import com.ewa.portfolio.timelines.entity.Note;
 import com.ewa.portfolio.timelines.repository.NoteRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +19,14 @@ public class NoteService {
 
     public Optional<NoteDto> findNoteById(Long id) {
         return noteRepository.findById(id)
-                .map(NoteService::createNoteDto);
+                .map(Note::createNoteDto);
     }
 
     public List<NoteDto> getAllNotes() {
         List<Note> notes = noteRepository.findAll();
 
         return notes.stream()
-                .map(NoteService::createNoteDto)
+                .map(Note::createNoteDto)
                 .toList();
     }
 
@@ -36,14 +35,12 @@ public class NoteService {
         note.setContent(noteDTO.content());
         note.setTitle(noteDTO.title());
         Note updatedNote = noteRepository.save(note);
-        return createNoteDto(updatedNote);
+        return updatedNote.createNoteDto();
     }
 
     public void deleteNote(Long id) {
         noteRepository.deleteById(id);
     }
 
-    public static NoteDto createNoteDto(Note note) {
-        return new NoteDto(note.getId(), note.getContent(), note.getTitle());
-    }
+
 }

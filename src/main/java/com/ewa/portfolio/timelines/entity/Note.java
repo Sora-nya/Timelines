@@ -1,5 +1,6 @@
 package com.ewa.portfolio.timelines.entity;
 
+import com.ewa.portfolio.timelines.dto.NoteDto;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -31,7 +32,8 @@ public class Note {
         return id;
     }
 
-    private void setId(Long id) {
+    //public for test access
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -63,6 +65,8 @@ public class Note {
         this.position = position;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,6 +80,10 @@ public class Note {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    public NoteDto createNoteDto() {
+        return new NoteDto(getId(), getContent(), getTitle());
     }
 
 }

@@ -117,7 +117,7 @@ class TimelineServiceTest {
         timelineDto = timelineService.createNote(timelineDto.id(), new CreateNoteDto("a", "2", null, null));
 
         // when
-        timelineService.updateNote(new UpdateNoteDto(timelineDto.notes().get(0).id(), "new content", "new title"), timelineDto.id());
+        timelineService.updateNote(new UpdateNoteDto(timelineDto.notes().get(0).id(), "new content", "new title"));
 
         //then
         var timelines = timelineService.findTimelineById(timelineDto.id());
@@ -129,5 +129,4 @@ class TimelineServiceTest {
             );
         });
     }
-
 }

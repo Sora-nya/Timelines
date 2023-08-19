@@ -54,13 +54,13 @@ public class TimelineService {
     private static TimelineDto createTimelineDto(Timeline timeline) {
         return new TimelineDto(timeline.getId(),
                 timeline.getNoteList().stream()
-                        .map(NoteService::createNoteDto).toList(),
+                        .map(Note::createNoteDto).toList(),
                 timeline.getTitle());
     }
 
     @Transactional
     public TimelineDto createNote(Long id, CreateNoteDto noteDto) {
-        Timeline timeline = getTimelineThrowIsNotFound(id);
+        Timeline timeline = getTimelineThrowIfNotFound(id);
         //validate CreateNoteDto ids
 
         BigDecimal position = calculatePosition(noteDto.priorId(), noteDto.posteriorId(), timeline);
@@ -73,7 +73,7 @@ public class TimelineService {
 
     // TODO w wolnym czasie -> przenieść to do TimelineRepository
     //      default interface method
-    private Timeline getTimelineThrowIsNotFound(Long id) {
+    private Timeline getTimelineThrowIfNotFound(Long id) {
         return timelineRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Timeline Not Found"));
     }
@@ -84,7 +84,8 @@ public class TimelineService {
         if (priorPosition.compareTo(posteriorPosition)>=0)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Prior note should be before posterior");
 
-        return priorPosition.add(posteriorPosition).divide(TWO, RoundingMode.UNNECESSARY);
+        BigDecimal sum = priorPosition.add(posteriorPosition);
+        return sum.divide(TWO, sum.scale()+1,RoundingMode.HALF_UP);
     }
 
     private BigDecimal getNotePositionOr(Long noteId, Timeline timeline, BigDecimal defaultPosition) {
@@ -96,20 +97,22 @@ public class TimelineService {
     }
 
     @Transactional
-    public void updateNote(UpdateNoteDto updateNoteDto, long timelineId) {
+    public NoteDto updateNote(UpdateNoteDto updateNoteDto) {
         Note note = noteRepository.findById(updateNoteDto.id()).orElseThrow();
         note.setTitle(updateNoteDto.title());
         note.setContent(updateNoteDto.content());
         // bez @Transactional - trzeba zapisać, bo zmienna note nie ma aktywnej sesji
         // z @transactional - zmienna note ma aktywną sesje i wszystkie zmiany do niej spropagują się do bazy
         // noteRepository.save(note);
+        return note.createNoteDto();
     }
 
     @Transactional
-    public void reorderNote(ReorderNoteDto reorderNoteDto, Long timelineId) {
-        Timeline timeline = getTimelineThrowIsNotFound(timelineId);
+    public NoteDto reorderNote(ReorderNoteDto reorderNoteDto, Long timelineId) {
+        Timeline timeline = getTimelineThrowIfNotFound(timelineId);
         BigDecimal newPosition = calculatePosition(reorderNoteDto.priorId(), reorderNoteDto.posteriorId(), timeline);
         Note note = noteRepository.findById(reorderNoteDto.id()).orElseThrow();
         note.setPosition(newPosition);
+        return note.createNoteDto();
     }
 }

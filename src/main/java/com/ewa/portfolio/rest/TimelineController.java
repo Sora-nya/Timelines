@@ -49,16 +49,14 @@ public class TimelineController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    //todo updateNote
     @PutMapping("/{timelineId}/notes/{noteId}")
     public ResponseEntity<NoteDto> updateNote(@PathVariable Long timelineId,
                                               @PathVariable Long noteId,
                                               @RequestBody UpdateNoteDto updateNoteDto) {
         //todo walidacja noteId === updateNoteDto.id
-        timelineService.updateNote(updateNoteDto, timelineId);
+        NoteDto noteDto = timelineService.updateNote(updateNoteDto);
 
-        //todo change na wartość NoteDto
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).body(noteDto);
     }
 
     @PutMapping("/{timelineId}/notes/{noteId}/reorder")
@@ -66,9 +64,8 @@ public class TimelineController {
                                                @PathVariable Long noteId,
                                                @RequestBody ReorderNoteDto reorderNoteDto) {
 
-        timelineService.reorderNote(reorderNoteDto, timelineId);
-        //todo change na wartość NoteDto
-        return ResponseEntity.noContent().build();
+        NoteDto noteDto = timelineService.reorderNote(reorderNoteDto, timelineId);
+        return ResponseEntity.status(HttpStatus.OK).body(noteDto);
     }
 
 }
