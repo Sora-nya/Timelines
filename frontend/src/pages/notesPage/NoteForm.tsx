@@ -1,6 +1,6 @@
 import axios from "axios";
 import { AddButtonId } from "./types";
-import { Form, Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import styled from "styled-components";
 import { useEffect, useRef } from "react";
 
@@ -59,15 +59,20 @@ const StyledButton = styled.button`
   }
 `;
 
-interface CreateNoteProps {
+interface NoteFormProps {
   getNotes: () => void;
   positionId: AddButtonId;
-  id: string;
+  timelineId: string;
   onClose: () => void;
+  initialValues?: {
+    title: string;
+    content: string;
+  };
+  noteId?: string;
 }
 
-export const CreateNote: React.FC<CreateNoteProps> = (props) => {
-  const { getNotes, positionId, id, onClose } = props;
+export const NoteForm: React.FC<NoteFormProps> = (props) => {
+  const { getNotes, positionId, timelineId: id, onClose } = props;
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const handleSubmit = (values: any, { setSubmitting }: any) => {
@@ -89,8 +94,8 @@ export const CreateNote: React.FC<CreateNoteProps> = (props) => {
 
   const formik = useFormik({
     initialValues: {
-      title: '',
-      content: '',
+      title: props.initialValues?.title || '',
+      content: props.initialValues?.content || '',
     },
     onSubmit: handleSubmit,
   });
