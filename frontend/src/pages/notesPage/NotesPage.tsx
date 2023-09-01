@@ -3,11 +3,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Note, Timeline } from '../../types/types';
 import axios from 'axios';
 import styled from 'styled-components';
-import { CreateNote } from './CreateNoteForm';
+import { NoteForm } from './NoteForm';
 import { AddButtonId } from './types';
+import NoteItem from './NoteItem';
 
-//todo Wykminić, jak zrobić reorderowanie notatek na frontendzie - koncepcyjnie, jak to by miało wyglądać. Zrabialność tego ogarniemy później.
+
+//todo Wykminić, jak zrobić reorderowanie notatek na frontendzie
+// - koncepcyjnie, jak to by miało wyglądać. Zrabialność tego ogarniemy później.
 //todo edycja note'ów
+//todo jak wygląda aktualny komponent renderujący note'a 
+//todo dodać dwa przyciski
+//todo te przyciski mają wołać funkcje po naciśnięciu
+//todo przycisk edit powinien zmieniać zawartość  
+//wrzucić note item do własnego komponentu
 //todo usuwanie note'ów
 
 const TimelineTitle = styled.h1`
@@ -22,44 +30,12 @@ display: flex;
 flex-direction: column; //main-axis
 justify-content: flex-start;
 align-items: center;
-
 height: 100vh;
 `;
 
 interface NoteItemProps {
   isRight: boolean;
 }
-
-///margin right/left:auto 2. Align-self:flex-start:end
-const NoteItem = styled.div<NoteItemProps>`
-display: flex;
-flex-direction: column;
-width:45%;
-align-self: ${(props) => (props.isRight ? 'flex-end' : 'flex-start')};
-
-margin: 1rem;
-padding: 1rem;
-
-background-color: ${(props) => props.theme.colors.accent};
-
-border-radius: 5px;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-transition: transform 0.3s ease-in-out;
-
-&:hover {
-  transform: scale(1.05);
-}
-`;
-
-const Title = styled.h2`
-  color: ${(props) => props.theme.colors.text};
-  font-size: 1.2rem;
-  font-weight: bold;
-`;
-
-const Content = styled.p`
-  color: ${(props) => props.theme.colors.text};
-`;
 
 const HeaderContainer = styled.div`
   position: relative;
@@ -136,6 +112,7 @@ export const NotesPage = () => {
       return selectedButton?.priorId === priorId && selectedButton?.posteriorId === posteriorId;
     };
     const posteriorId = note.id;
+
     return (
       <>
         {index > 0 && (
@@ -146,10 +123,15 @@ export const NotesPage = () => {
             selected={isSelected()}
           />
         )}
-        <NoteItem isRight={index % 2 === 1}>
-          <Title>{note.title}</Title>
-          <Content>{note.content}</Content>
-        </NoteItem>
+        <NoteItem
+          key={note.id}
+          isRight={index % 2 === 1}
+          title={note.title}
+          content={note.content}
+          onDelete={()=>{}}
+          onEdit={()=>{}}
+        />
+
       </>
     );
   };
@@ -163,12 +145,12 @@ export const NotesPage = () => {
         <TimelineTitle>{timeline?.title}</TimelineTitle>
       </HeaderContainer>
       {selectedButton !== undefined && timelineId !== undefined && (
-        <CreateNote
+        <NoteForm
           getNotes={fetchData}
           positionId={selectedButton}
-          id={timelineId}
+          timelineId={timelineId}
           onClose={() => setSelectedButton(undefined)}
-        ></CreateNote>
+        ></NoteForm>
       )
       }
       {timeline && (
