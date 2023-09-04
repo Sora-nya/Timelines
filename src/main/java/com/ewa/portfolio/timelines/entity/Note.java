@@ -11,6 +11,8 @@ public class Note {
     @Id
     @GeneratedValue
     private Long id;
+
+    @Lob
     private String content;
     private String title;
     @ManyToOne
