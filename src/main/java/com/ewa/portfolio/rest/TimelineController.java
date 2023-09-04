@@ -37,6 +37,17 @@ public class TimelineController {
         return ResponseEntity.status(HttpStatus.CREATED).body(timelineDTO);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<TimelinePreviewDto> archiveTimeline(@PathVariable Long id, @RequestBody TimelinePreviewDto timelinePreviewDto) {
+        if (id.equals(timelinePreviewDto.id())) {
+            //todo: zobaczyć czy nie ma lepszego statusu na złamanie kontraktu, dodać error
+            //todo: dodać testy
+            return ResponseEntity.badRequest().build();
+        }
+        TimelinePreviewDto timelineDtoToArchive = timelineService.updateTimeline(timelinePreviewDto);
+        return ResponseEntity.ok().body(timelineDtoToArchive);
+    }
+
     @PostMapping("/{id}/notes")
     public ResponseEntity<TimelineDto> createNote(@PathVariable Long id, @RequestBody CreateNoteDto noteDto) {
         TimelineDto timelineDto = timelineService.createNote(id, noteDto);

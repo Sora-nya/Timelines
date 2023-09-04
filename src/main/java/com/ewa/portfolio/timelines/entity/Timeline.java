@@ -19,12 +19,26 @@ public class Timeline {
     private List<Note> noteList = new ArrayList<>();
     private String title;
 
+    private boolean archived = false;
+
 
     public Timeline(String title) {
         this.title = title;
     }
 
     public Timeline() {
+    }
+
+    public void add(Note newNote) {
+        noteList.add(newNote);
+    }
+
+    public Note findNoteById(Long noteId) {
+
+        return noteList.stream()
+                .filter(note -> note.getId().equals(noteId))
+                .findFirst()
+                .orElseThrow(()-> new NoSuchElementException("Note of id " + noteId + " not found"));
     }
 
     public Long getId() {
@@ -66,15 +80,11 @@ public class Timeline {
         return id != null ? id.hashCode() : 0;
     }
 
-    public void add(Note newNote) {
-        noteList.add(newNote);
+    public boolean isArchived() {
+        return archived;
     }
 
-    public Note findNoteById(Long noteId) {
-
-        return noteList.stream()
-                .filter(note -> note.getId().equals(noteId))
-                .findFirst()
-                .orElseThrow(()-> new NoSuchElementException("Note of id " + noteId + " not found"));
+    public void setArchived(boolean archived) {
+        this.archived = archived;
     }
 }
