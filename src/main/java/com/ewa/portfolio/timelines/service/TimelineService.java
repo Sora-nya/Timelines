@@ -55,7 +55,8 @@ public class TimelineService {
         return new TimelineDto(timeline.getId(),
                 timeline.getNoteList().stream()
                         .map(Note::createNoteDto).toList(),
-                timeline.getTitle());
+                timeline.getTitle(),
+                timeline.isArchived());
     }
 
     @Transactional
@@ -81,11 +82,11 @@ public class TimelineService {
     private BigDecimal calculatePosition(Long priorId, Long posteriorId, Timeline timeline) {
         BigDecimal priorPosition = getNotePositionOr(priorId, timeline, MIN_POSITION);
         BigDecimal posteriorPosition = getNotePositionOr(posteriorId, timeline, MAX_POSITION);
-        if (priorPosition.compareTo(posteriorPosition)>=0)
+        if (priorPosition.compareTo(posteriorPosition) >= 0)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Prior note should be before posterior");
 
         BigDecimal sum = priorPosition.add(posteriorPosition);
-        return sum.divide(TWO, sum.scale()+1,RoundingMode.HALF_UP);
+        return sum.divide(TWO, sum.scale() + 1, RoundingMode.HALF_UP);
     }
 
     private BigDecimal getNotePositionOr(Long noteId, Timeline timeline, BigDecimal defaultPosition) {
@@ -114,5 +115,12 @@ public class TimelineService {
         Note note = noteRepository.findById(reorderNoteDto.id()).orElseThrow();
         note.setPosition(newPosition);
         return note.createNoteDto();
+    }
+
+    @Transactional
+    public TimelinePreviewDto updateTimeline(TimelinePreviewDto timelinePreviewDto) {
+        Timeline timeline = getTimelineThrowIfNotFound(timelinePreviewDto.id());
+        timeline.setArchived(timelinePreviewDto.archived());
+        return timelinePreviewDto;
     }
 }
