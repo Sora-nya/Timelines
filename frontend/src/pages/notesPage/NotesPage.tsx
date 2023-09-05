@@ -113,6 +113,21 @@ export const NotesPage = () => {
     };
     const posteriorId = note.id;
 
+    const handleDeleteNote = async (noteId: number) => {
+      const confirmed = window.confirm('Are you sure you want to delete this note?');
+
+      if (confirmed) {
+        try {
+          await axios.delete(`http://localhost:8080/api/notes/${noteId}`);
+
+          fetchData();
+        } catch (error) {
+          console.error('Error deleting note:', error);
+        }
+      }
+    };
+
+
     return (
       <>
         {index > 0 && (
@@ -128,8 +143,8 @@ export const NotesPage = () => {
           isRight={index % 2 === 1}
           title={note.title}
           content={note.content}
-          onDelete={()=>{}}
-          onEdit={()=>{}}
+          onDelete={() => handleDeleteNote(note.id)}
+          onEdit={() => { }}
         />
 
       </>
