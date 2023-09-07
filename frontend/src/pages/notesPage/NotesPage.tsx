@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { NoteForm } from './NoteForm';
 import { AddButtonId } from './types';
 import NoteItem from './NoteItem';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 
 //todo Wykminić, jak zrobić reorderowanie notatek na frontendzie
@@ -106,6 +107,10 @@ export const NotesPage = () => {
     setSelectedButton(addId);
   };
 
+  const handleDragEnd = (result: any) => {
+    console.log(result);
+  }
+
   const renderNotesWithButtons = (note: Note, index: number) => {
     const priorId = index > 0 ? timeline!.notes[index - 1].id : null;
     const isSelected = (): boolean => {
@@ -138,14 +143,25 @@ export const NotesPage = () => {
             selected={isSelected()}
           />
         )}
-        <NoteItem
-          key={note.id}
-          isRight={index % 2 === 1}
-          title={note.title}
-          content={note.content}
-          onDelete={() => handleDeleteNote(note.id)}
-          onEdit={() => { }}
-        />
+        <Draggable key={""+note.id}  index={index} draggableId={""+note.id}>
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+            >
+              <NoteItem
+                key={note.id}
+                isRight={index % 2 === 1}
+                title={note.title}
+                content={note.content}
+                onDelete={() => handleDeleteNote(note.id)}
+                onEdit={() => { }}
+              />
+            </div>
+          )}
+
+        </Draggable>
 
       </>
     );
@@ -169,24 +185,35 @@ export const NotesPage = () => {
       )
       }
       {timeline && (
-        <NotesContainer>
-          <AddNoteButton
-            priorId={null}
-            posteriorId={timeline.notes.length > 0 ? timeline.notes[0].id : null}
-            onClick={updateSelectedButton}
-            selected={selectedButton?.priorId === null && selectedButton?.posteriorId === (timeline.notes.length > 0 ? timeline.notes[0].id : null)}
-          />
-          {timeline.notes.map((note, index) => renderNotesWithButtons(note, index))}
-          {timeline.notes.length > 0 && (
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <NotesContainer>
             <AddNoteButton
-              priorId={timeline.notes[timeline.notes.length - 1].id}
-              posteriorId={null}
+              priorId={null}
+              posteriorId={timeline.notes.length > 0 ? timeline.notes[0].id : null}
               onClick={updateSelectedButton}
-              selected={selectedButton?.priorId === timeline.notes[timeline.notes.length - 1].id && selectedButton?.posteriorId === null}
+              selected={selectedButton?.priorId === null && selectedButton?.posteriorId === (timeline.notes.length > 0 ? timeline.notes[0].id : null)}
             />
-          )
-          }
-        </NotesContainer>
+            <Droppable droppableId='droppable'>
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {timeline.notes.map((note, index) => renderNotesWithButtons(note, index))}
+                </div>
+              )}
+            </Droppable>
+            {timeline.notes.length > 0 && (
+              <AddNoteButton
+                priorId={timeline.notes[timeline.notes.length - 1].id}
+                posteriorId={null}
+                onClick={updateSelectedButton}
+                selected={selectedButton?.priorId === timeline.notes[timeline.notes.length - 1].id && selectedButton?.posteriorId === null}
+              />
+            )
+            }
+          </NotesContainer>
+        </DragDropContext>
       )}
     </div>
   );
