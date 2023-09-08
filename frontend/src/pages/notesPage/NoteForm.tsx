@@ -61,7 +61,7 @@ const StyledButton = styled.button`
 
 interface NoteFormProps {
   getNotes: () => void;
-  positionId: AddButtonId;
+  positionId?: AddButtonId;
   timelineId: string;
   onClose: () => void;
   initialValues?: {
@@ -72,20 +72,36 @@ interface NoteFormProps {
 }
 
 export const NoteForm: React.FC<NoteFormProps> = (props) => {
-  const { getNotes, positionId, timelineId: id, onClose } = props;
+  const { getNotes, positionId, timelineId: id, onClose, initialValues, noteId } = props;
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const handleSubmit = (values: any, { setSubmitting }: any) => {
-    axios
-      .post(`http://localhost:8080/api/timelines/${id}/notes`, {
+    const apiUrl = noteId
+      ? `http://localhost:8080/api/timelines/${id}/notes/${noteId}`
+      : `http://localhost:8080/api/timelines/${id}/notes`;
+
+    const requestMethod = noteId ? axios.put : axios.post;
+
+    const requestBody = noteId
+      ? {
+        id: noteId,
         title: values.title,
         content: values.content,
-        priorId: positionId.priorId,
-        posteriorId: positionId.posteriorId,
-      })
+      }
+      : {
+        title: values.title,
+        content: values.content,
+        priorId: positionId!.priorId,
+        posteriorId: positionId!.posteriorId,
+      };
+
+    requestMethod(apiUrl, requestBody)
       .then(() => {
         getNotes();
         onClose();
+      })
+      .catch((error) => {
+        console.error('Error editing/creating note:', error);
       })
       .finally(() => {
         setSubmitting(false);
