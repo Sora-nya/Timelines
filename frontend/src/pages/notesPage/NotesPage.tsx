@@ -133,6 +133,10 @@ export const NotesPage = () => {
     };
 
 
+    const handleEditNote= async (noteId: number) => {
+      throw new Error('Function not implemented.');
+    }
+
     return (
       <>
         {index > 0 && (
@@ -156,7 +160,7 @@ export const NotesPage = () => {
                 title={note.title}
                 content={note.content}
                 onDelete={() => handleDeleteNote(note.id)}
-                onEdit={() => { }}
+                onEdit={()=> handleEditNote(note.id)}
               />
             </div>
           )}
