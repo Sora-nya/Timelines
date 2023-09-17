@@ -2,8 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import editIcon from '../../icons/edit.svg';
 import deleteIcon from '../../icons/delete.png'
+import { Draggable } from 'react-beautiful-dnd';
 
 interface NoteItemProps {
+    id: number;
+    index: number;
+    // we need to pass the id and index ONLY to satisfy props for Draggable
     isRight: boolean;
     title: string;
     content: string;
@@ -68,9 +72,11 @@ const Content = styled.p`
 `;
 
 const NoteItem: React.FC<NoteItemProps> = (props) => {
-    const { isRight, title, content, onEdit, onDelete } = props;
+    const { isRight, title, content, onEdit, onDelete, id, index} = props;
     return (
-        <StyledNoteItem isRight={isRight}>
+      <Draggable key={"" + id} index={index} draggableId={"" + id}>
+          {(provided, snapshot) => (
+        <StyledNoteItem isRight={isRight} {...provided.draggableProps } {...provided.dragHandleProps}  ref={provided.innerRef}>
             <NoteHeaderIcons
                 onEdit={onEdit}
                 onDelete={onDelete}
@@ -80,6 +86,8 @@ const NoteItem: React.FC<NoteItemProps> = (props) => {
             <Title>{title}</Title>
             <Content>{content}</Content>
         </StyledNoteItem>
+          )}
+        </Draggable>
     );
 };
 
