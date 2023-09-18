@@ -59,9 +59,10 @@ const StyledButton = styled.button`
   }
 `;
 
+// todo - remove ambuguity with optional types (2 types? 2 more specific components like AddNote, EditNote, that use NoteForm?)
 interface NoteFormProps {
   getNotes: () => void;
-  positionId?: AddButtonId;
+  positionId?: AddButtonId; // only undefined if this is for editing a note
   timelineId: string;
   onClose: () => void;
   initialValues?: {
