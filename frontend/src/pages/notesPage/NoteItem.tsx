@@ -71,7 +71,7 @@ const Content = styled.p`
   color: ${(props) => props.theme.colors.text};
 `;
 
-const NoteItem: React.FC<NoteItemProps> = (props) => {
+export const NoteItem: React.FC<NoteItemProps> = (props) => {
     const { isRight, title, content, onEdit, onDelete, id, index} = props;
     return (
       <Draggable key={"" + id} index={index} draggableId={"" + id}>
@@ -107,5 +107,3 @@ const NoteHeaderIcons: React.FC<NoteHeaderIconsProps> = ({ onEdit, onDelete, edi
         </IconContainer>
     );
 };
-
-export default NoteItem;

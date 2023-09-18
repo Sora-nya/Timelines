@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import { Note, Timeline } from '../../types/types';
-import axios from 'axios';
+import { Note, Timeline } from 'types/types';
+import axios from 'axios'
 import styled from 'styled-components';
 import { NoteForm } from './NoteForm';
 import { AddButtonId } from './types';
-import NoteItem from './NoteItem';
+import {NoteItem} from './NoteItem';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 
-//todo Wykminić, jak zrobić reorderowanie notatek na frontendzie
-// - koncepcyjnie, jak to by miało wyglądać. Zrabialność tego ogarniemy później.
 //todo edycja note'ów
-//todo jak wygląda aktualny komponent renderujący note'a 
-//todo dodać dwa przyciski
-//todo te przyciski mają wołać funkcje po naciśnięciu
 //todo przycisk edit powinien zmieniać zawartość  
-//wrzucić note item do własnego komponentu
-//todo usuwanie note'ów
+//todo reorderowanie note'a powinno wołać backend z reorderem, oraz ponownie pobierać listę note'ów
 
 const TimelineTitle = styled.h1`
   color: ${props => props.theme.colors.highlight};
