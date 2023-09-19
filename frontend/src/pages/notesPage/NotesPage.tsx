@@ -5,9 +5,8 @@ import axios from 'axios'
 import styled from 'styled-components';
 import { NoteForm } from './NoteForm';
 import { AddButtonId } from './types';
-import {NoteItem} from './NoteItem';
+import { NoteItem } from './NoteItem';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-
 
 //todo edycja note'ów
 //todo przycisk edit powinien zmieniać zawartość  
@@ -102,7 +101,27 @@ export const NotesPage = () => {
   };
 
   const handleDragEnd = (result: any) => {
-    console.log(result);
+    const { destination } = result;
+    console.info(result);
+    if (destination === null) {
+      return;
+    }
+    const priorId = destination.index == 0
+      ? null
+      : timeline?.notes[destination.index - 1].id;
+    const posteriorId = destination.index == timeline!.notes.length - 1
+      ? null
+      : timeline?.notes[destination.index + 1].id;
+    axios
+      .put(`http://localhost:8080/api/timelines/${timelineId}/notes/${result.draggableId}/reorder`,
+        {
+          id: +result.draggableId,
+          priorId, posteriorId: posteriorId
+        }
+      ).then(() => {
+        fetchData();
+      })
+
   }
 
   const renderNotesWithButtons = (note: Note, index: number) => {
@@ -186,7 +205,6 @@ export const NotesPage = () => {
                 />
 
                 {timeline.notes.map((note, index) => renderNotesWithButtons(note, index))}
-
 
                 {timeline.notes.length > 0 && (
                   <AddNoteButton
