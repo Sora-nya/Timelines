@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Note, Timeline } from 'types/types';
 import axios from 'axios'
 import styled from 'styled-components';
-import { NoteForm } from './NoteForm';
+import { AddNoteForm } from './NoteForm';
 import { AddButtonId } from './types';
 import { NoteItem } from './NoteItem';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -145,11 +145,6 @@ export const NotesPage = () => {
       }
     };
 
-
-    const handleEditNote = async (noteId: number) => {
-      throw new Error('Function not implemented.');
-    }
-
     return (
       <>
         {index > 0 && (
@@ -161,14 +156,15 @@ export const NotesPage = () => {
           />
         )}
         <NoteItem
-          id={note.id}
+          id={""+note.id}
           index={index}
           key={note.id}
           isRight={index % 2 === 1}
           title={note.title}
           content={note.content}
           onDelete={() => handleDeleteNote(note.id)}
-          onEdit={() => handleEditNote(note.id)}
+          refreshData={fetchData}
+          timelineId={timelineId!}
         />
       </>
     );
@@ -183,12 +179,12 @@ export const NotesPage = () => {
         <TimelineTitle>{timeline?.title}</TimelineTitle>
       </HeaderContainer>
       {selectedButton !== undefined && timelineId !== undefined && (
-        <NoteForm
-          getNotes={fetchData}
+        <AddNoteForm
+          refreshNotes={fetchData}
           positionId={selectedButton}
           timelineId={timelineId}
           onClose={() => setSelectedButton(undefined)}
-        ></NoteForm>
+        ></AddNoteForm>
       )
       }
       {timeline && (
