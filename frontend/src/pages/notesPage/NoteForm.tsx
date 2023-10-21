@@ -35,7 +35,7 @@ const StyledContentField = styled.textarea`
   margin-bottom: 0.5rem;
   border: 1px solid ${(props) => props.theme.colors.primary};
   border-radius: 4px;
-  resize: vertical; /* Allows the textarea to be resized vertically */
+  resize: vertical;
 `;
 
 const ButtonContainer = styled.div`
@@ -60,20 +60,49 @@ const StyledButton = styled.button`
 `;
 
 // todo - remove ambuguity with optional types (2 types? 2 more specific components like AddNote, EditNote, that use NoteForm?)
-interface NoteFormProps {
-  getNotes: () => void;
-  positionId?: AddButtonId; // only undefined if this is for editing a note
+interface AddNoteFormProps {
+  refreshNotes: () => void;
+  positionId: AddButtonId; 
   timelineId: string;
   onClose: () => void;
+}
+
+
+interface EditNoteFormProps {
+  refreshNotes: () => void;
+  timelineId: string;
+  onClose: () => void;
+  initialValues: {
+    title?: string;
+    content?: string;
+  };
+  noteId: string;
+}
+
+// TODO: ogarnąć u Pana Bucina jak to otypować
+interface NoteFormProps {
+  refreshNotes: () => void;
+  timelineId: string;
+  positionId?: AddButtonId; 
+  onClose: () => void;
   initialValues?: {
-    title: string;
-    content: string;
+    title?: string;
+    content?: string;
   };
   noteId?: string;
 }
+// type NoteFormProps=AddNoteFormProps & EditNoteFormProps;
 
-export const NoteForm: React.FC<NoteFormProps> = (props) => {
-  const { getNotes, positionId, timelineId: id, onClose, initialValues, noteId } = props;
+export const AddNoteForm: React.FC<AddNoteFormProps> = (props) => {
+  return (<NoteForm {...props}></NoteForm>)
+} 
+
+export const EditNoteForm: React.FC<EditNoteFormProps> = (props) => {
+  return (<NoteForm {...props}></NoteForm>)
+} 
+
+ const NoteForm: React.FC<NoteFormProps> = (props) => {
+  const { refreshNotes: getNotes, positionId, timelineId: id, onClose, initialValues, noteId } = props;
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const handleSubmit = (values: any, { setSubmitting }: any) => {
