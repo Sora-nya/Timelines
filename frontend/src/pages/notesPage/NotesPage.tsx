@@ -2,74 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { Note, Timeline } from 'types/types';
 import axios from 'axios'
-import styled from 'styled-components';
 import { AddNoteForm } from './NoteForm';
 import { AddButtonId } from './types';
 import { NoteItem } from './NoteItem';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { BackToTimelinesButton, HeaderContainer, TimelineTitle, NotesContainer, StyledAddNoteButton, BackToTimelinesButtonContainer } from './Notes.style';
 
-//todo edycja note'ów
-//todo przycisk edit powinien zmieniać zawartość  
-//todo reorderowanie note'a powinno wołać backend z reorderem, oraz ponownie pobierać listę note'ów
-
-const TimelineTitle = styled.h1`
-  color: ${props => props.theme.colors.highlight};
-  font-size: 2rem;
-  font-weight: bold;
-  padding: 1rem;
-`;
-
-const NotesContainer = styled.div`
-display: flex;
-flex-direction: column; //main-axis
-justify-content: flex-start;
-align-items: center;
-height: 100vh;
-`;
-
-interface NoteItemProps {
-  isRight: boolean;
-}
-
-const HeaderContainer = styled.div`
-  position: relative;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 1rem;
-`;
-
-const BackToTimelinesButton = styled.button`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 5px;
-  background-color: ${(props) => props.theme.colors.accent};
-  color: ${(props) => props.theme.colors.text};
-  cursor: pointer;
-`;
-
-interface ButtonIdProps {
-  isSelected?: boolean;
-}
-
-const StyledAddNoteButton = styled.button<ButtonIdProps>`
-  padding: 0.5rem 1rem;
-  margin: 0 0.5rem;
-  border: none;
-  border-radius: 5px;
-  background-color: ${(props) => props.theme.colors.accent};
-  color: ${(props) => props.theme.colors.text};
-  opacity: ${(props) => (props.isSelected ? '1' : '0.2')};
-  cursor: pointer;
-  &:hover {
-    opacity: 0.81; 
-  }
-`;
+//todo walidacja na froncie zawartości inputów
 
 export const NotesPage = () => {
   const { timelineId } = useParams();
@@ -156,7 +95,7 @@ export const NotesPage = () => {
           />
         )}
         <NoteItem
-          id={""+note.id}
+          id={"" + note.id}
           index={index}
           key={note.id}
           isRight={index % 2 === 1}
@@ -172,9 +111,9 @@ export const NotesPage = () => {
 
   return (
     <div>
-      <ButtonContainer>
+      <BackToTimelinesButtonContainer>
         <BackToTimelinesButton onClick={handleGoBack}>Go back to timelines!</BackToTimelinesButton>
-      </ButtonContainer>
+      </BackToTimelinesButtonContainer>
       <HeaderContainer>
         <TimelineTitle>{timeline?.title}</TimelineTitle>
       </HeaderContainer>
