@@ -71,9 +71,6 @@ public class TimelineService {
         return createTimelineDto(timeline);
     }
 
-
-    // TODO w wolnym czasie -> przenieść to do TimelineRepository
-    //      default interface method
     private Timeline getTimelineThrowIfNotFound(Long id) {
         return timelineRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Timeline Not Found"));
@@ -118,7 +115,7 @@ public class TimelineService {
     }
 
     @Transactional
-    public TimelinePreviewDto updateTimeline(TimelinePreviewDto timelinePreviewDto) {
+    public TimelinePreviewDto archiveTimeline(TimelinePreviewDto timelinePreviewDto) {
         Timeline timeline = getTimelineThrowIfNotFound(timelinePreviewDto.id());
         timeline.setArchived(timelinePreviewDto.archived());
         return timelinePreviewDto;

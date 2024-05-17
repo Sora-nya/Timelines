@@ -16,7 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MockTimelineServiceTest {
-
+//unit testy z punktu widzenia testowania na be
     TimelineService timelineService;
     TimelineRepository timelineRepositoryMock = mock(TimelineRepository.class);
     NoteRepository noteRepositoryMock = mock(NoteRepository.class);

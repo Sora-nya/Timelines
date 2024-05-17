@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class TimelineServiceTest {
+//integracyjne testy z punktu widzenia testowania na be
 
     @Autowired
     TimelineService timelineService;
@@ -128,5 +129,18 @@ class TimelineServiceTest {
                     }
             );
         });
+    }
+
+    @Test
+    void can_archive_timeline() {
+        //given
+        TimelineDto timelineDto = timelineService.createTimeline(new CreateTimelineDto("First"));
+
+        //when
+        timelineService.archiveTimeline(new TimelinePreviewDto(timelineDto.id(),true));
+
+        //then
+        var timeline = timelineService.findTimelineById(timelineDto.id());
+        assertThat(timeline.get().archived()).isTrue();
     }
 }

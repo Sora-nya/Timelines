@@ -41,10 +41,9 @@ public class TimelineController {
     public ResponseEntity<TimelinePreviewDto> archiveTimeline(@PathVariable Long id, @RequestBody TimelinePreviewDto timelinePreviewDto) {
         if (id.equals(timelinePreviewDto.id())) {
             //todo: zobaczyć czy nie ma lepszego statusu na złamanie kontraktu, dodać error
-            //todo: dodać testy
             return ResponseEntity.badRequest().build();
         }
-        TimelinePreviewDto timelineDtoToArchive = timelineService.updateTimeline(timelinePreviewDto);
+        TimelinePreviewDto timelineDtoToArchive = timelineService.archiveTimeline(timelinePreviewDto);
         return ResponseEntity.ok().body(timelineDtoToArchive);
     }
 
@@ -64,9 +63,10 @@ public class TimelineController {
     public ResponseEntity<NoteDto> updateNote(@PathVariable Long timelineId,
                                               @PathVariable Long noteId,
                                               @RequestBody UpdateNoteDto updateNoteDto) {
-        //todo walidacja noteId === updateNoteDto.id
         NoteDto noteDto = timelineService.updateNote(updateNoteDto);
-
+        if (!noteId.equals(updateNoteDto.id())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
         return ResponseEntity.status(HttpStatus.OK).body(noteDto);
     }
 
