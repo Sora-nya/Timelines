@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import editIcon from '../../icons/edit.svg';
 import deleteIcon from '../../icons/delete.png'
 import { Draggable } from 'react-beautiful-dnd';
 import { EditNoteForm } from './NoteForm';
+import { Content, Icon, IconContainer, StyledNoteItem, Title } from './Notes.style';
 
 interface NoteItemProps {
   id: string;
