@@ -1,68 +1,13 @@
 import axios from "axios";
 import { AddButtonId } from "./types";
 import { useFormik } from "formik";
-import styled from "styled-components";
 import { useEffect, useRef } from "react";
-
-const CenteredContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40vh;
-`;
-
-const FormContainer = styled.div`
-  width: 50%;
-  padding: 2rem;
-  background-color: ${(props) => props.theme.colors.accent};
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const StyledTitleField = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  border: 1px solid ${(props) => props.theme.colors.primary};
-  border-radius: 4px;
-  height: 20px; 
-`;
-
-const StyledContentField = styled.textarea`
-  width: 100%;
-  height: 75px; /* Adjust the height as needed */
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  border: 1px solid ${(props) => props.theme.colors.primary};
-  border-radius: 4px;
-  resize: vertical;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-`;
-
-const StyledButton = styled.button`
-  padding: 0.5rem 1rem;
-  margin: 1rem;
-  background-color: ${(props) => props.theme.colors.callToAction};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
-
-  &:hover {
-    background-color: ${(props) => props.theme.colors.highlight};
-  }
-`;
+import { ButtonContainer, CenteredContainer, FormContainer, StyledButton, StyledContentField, StyledTitleField } from "./Notes.style";
 
 // todo - remove ambuguity with optional types (2 types? 2 more specific components like AddNote, EditNote, that use NoteForm?)
 interface AddNoteFormProps {
   refreshNotes: () => void;
-  positionId: AddButtonId; 
+  positionId: AddButtonId;
   timelineId: string;
   onClose: () => void;
 }
@@ -83,7 +28,7 @@ interface EditNoteFormProps {
 interface NoteFormProps {
   refreshNotes: () => void;
   timelineId: string;
-  positionId?: AddButtonId; 
+  positionId?: AddButtonId;
   onClose: () => void;
   initialValues?: {
     title?: string;
@@ -95,13 +40,13 @@ interface NoteFormProps {
 
 export const AddNoteForm: React.FC<AddNoteFormProps> = (props) => {
   return (<NoteForm {...props}></NoteForm>)
-} 
+}
 
 export const EditNoteForm: React.FC<EditNoteFormProps> = (props) => {
   return (<NoteForm {...props}></NoteForm>)
-} 
+}
 
- const NoteForm: React.FC<NoteFormProps> = (props) => {
+const NoteForm: React.FC<NoteFormProps> = (props) => {
   const { refreshNotes: getNotes, positionId, timelineId: id, onClose, initialValues, noteId } = props;
   const formRef = useRef<HTMLFormElement | null>(null);
 

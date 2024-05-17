@@ -17,61 +17,7 @@ interface NoteItemProps {
   timelineId: string;
 }
 
-interface StyledNoteItemProps {
-  isRight: boolean;
-}
 
-const IconContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  display: flex;
-  gap: 10px;
-`;
-
-const Icon = styled.img`
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-`;
-///margin right/left:auto 2. Align-self:flex-start:end
-const StyledNoteItem = styled.div<StyledNoteItemProps>`
-  display: flex;
-  flex-direction: column;
-  width: 45%;
-  align-self: ${(props) => (props.isRight ? 'flex-end' : 'flex-start')};
-
-  margin: 1rem;
-  padding: 1rem;
-
-  background-color: ${(props) => props.theme.colors.accent};
-
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-  ${IconContainer} ${Icon} {
-    opacity: 0;
-  }
-  &:hover ${IconContainer} ${Icon} {
-    opacity: 0.3
-  }
-  &:hover ${IconContainer} ${Icon}:hover {
-    opacity: 1
-  }
-`;
-
-const Title = styled.h2`
-  color: ${(props) => props.theme.colors.text};
-  font-size: 1.2rem;
-  font-weight: bold;
-`;
-
-const Content = styled.p`
-  color: ${(props) => props.theme.colors.text};
-`;
 
 export const NoteItem: React.FC<NoteItemProps> = (props) => {
   const { isRight, title, content, onDelete, id, index, refreshData, timelineId } = props;
